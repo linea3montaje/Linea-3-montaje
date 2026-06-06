@@ -6,139 +6,50 @@
 <title>Línea 3 Cocinas</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
-    min-height: 100vh;
-    padding-bottom: 60px;
-  }
-  .header {
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding: 14px 16px;
-    position: sticky; top: 0; z-index: 10;
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); min-height: 100vh; padding-bottom: 60px; }
+  .header { background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 16px; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
   .container { max-width: 600px; margin: 0 auto; padding: 16px; }
-  .card {
-    background: #fff; border-radius: 16px;
-    padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-    margin-bottom: 16px;
-  }
+  .card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); margin-bottom: 16px; }
   label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 4px; }
-  input, select, textarea {
-    width: 100%; padding: 10px 12px; border-radius: 8px;
-    border: 1px solid #e2e8f0; font-size: 14px;
-    font-family: inherit; outline: none; color: #1e293b;
-    background: #fff; margin-bottom: 12px;
-  }
+  input, select, textarea { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 14px; font-family: inherit; outline: none; color: #1e293b; background: #fff; margin-bottom: 12px; }
   textarea { resize: vertical; }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn-primary {
-    background: linear-gradient(135deg, #2563eb, #0ea5e9);
-    color: #fff; border: none; border-radius: 10px;
-    padding: 12px 16px; font-weight: 700; font-size: 15px;
-    cursor: pointer; width: 100%; margin-top: 8px;
-  }
-  .btn-sec {
-    background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;
-    border-radius: 8px; padding: 10px 14px;
-    font-weight: 600; font-size: 13px; cursor: pointer;
-  }
-  .btn-danger {
-    background: #fff5f5; color: #dc2626; border: 1px solid #fecaca;
-    border-radius: 10px; padding: 12px; font-weight: 600;
-    font-size: 14px; cursor: pointer; width: 100%; margin-top: 16px;
-  }
-  .btn-icon {
-    background: rgba(255,255,255,0.08); color: #94a3b8;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px; width: 38px; height: 38px;
-    font-size: 18px; cursor: pointer;
-  }
-  .btn-new {
-    background: linear-gradient(135deg, #2563eb, #0ea5e9);
-    color: #fff; border: none; border-radius: 10px;
-    padding: 8px 16px; font-weight: 700; font-size: 14px;
-    cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.4);
-  }
-  .badge {
-    display: inline-block; border-radius: 6px;
-    padding: 2px 10px; font-size: 12px; font-weight: 700;
-  }
+  .btn-primary { background: linear-gradient(135deg, #2563eb, #0ea5e9); color: #fff; border: none; border-radius: 10px; padding: 12px 16px; font-weight: 700; font-size: 15px; cursor: pointer; width: 100%; margin-top: 8px; }
+  .btn-pdf { background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none; border-radius: 10px; padding: 12px 16px; font-weight: 700; font-size: 15px; cursor: pointer; width: 100%; margin-top: 10px; }
+  .btn-sec { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-weight: 600; font-size: 13px; cursor: pointer; }
+  .btn-danger { background: #fff5f5; color: #dc2626; border: 1px solid #fecaca; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 14px; cursor: pointer; width: 100%; margin-top: 10px; }
+  .btn-icon { background: rgba(255,255,255,0.08); color: #94a3b8; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; width: 38px; height: 38px; font-size: 18px; cursor: pointer; }
+  .btn-new { background: linear-gradient(135deg, #2563eb, #0ea5e9); color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.4); }
+  .badge { display: inline-block; border-radius: 6px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
   .filter-bar { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
-  .filter-btn {
-    flex-shrink: 0; padding: 6px 14px; border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.06); color: #94a3b8;
-    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
-  }
+  .filter-btn { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #94a3b8; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
   .filter-btn.active { background: #2563eb; border-color: #2563eb; color: #fff; }
-  .nota-card {
-    background: rgba(255,255,255,0.06); backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px; padding: 14px 16px; cursor: pointer;
-    margin-bottom: 10px; display: flex; justify-content: space-between;
-  }
+  .nota-card { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: space-between; }
   .nota-card:hover { background: rgba(255,255,255,0.1); }
-  .search-input {
-    width: 100%; padding: 10px 12px; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.08); color: #fff;
-    font-size: 14px; font-family: inherit; outline: none;
-    margin-bottom: 12px;
-  }
+  .search-input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #fff; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 12px; }
   .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 20px; }
-  .stat-box {
-    background: rgba(255,255,255,0.04); border-radius: 10px;
-    padding: 12px 8px; text-align: center;
-  }
+  .stat-box { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px 8px; text-align: center; }
   .divider { height: 1px; background: #e2e8f0; margin: 16px 0; }
   .team-section { font-weight: 700; font-size: 13px; color: #475569; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 1px; }
-  .detail-row {
-    display: flex; justify-content: space-between;
-    padding: 4px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px;
-  }
+  .detail-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
   .foto-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .foto-grid img { width: calc(50% - 4px); border-radius: 10px; object-fit: cover; aspect-ratio: 1; border: 1px solid #e2e8f0; }
-  .error-box {
-    background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px;
-    padding: 12px 16px; margin-bottom: 16px; color: #dc2626; font-size: 14px;
-  }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; color: #dc2626; font-size: 14px; }
   .loading { text-align: center; padding: 60px 20px; color: #94a3b8; }
   .empty { text-align: center; padding: 60px 20px; color: #475569; }
   .tipo-selector { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-  .tipo-btn {
-    padding: 8px 14px; border-radius: 8px; border: 2px solid #e2e8f0;
-    background: #fff; color: #64748b; font-weight: 700; font-size: 13px; cursor: pointer;
-  }
+  .tipo-btn { padding: 8px 14px; border-radius: 8px; border: 2px solid #e2e8f0; background: #fff; color: #64748b; font-weight: 700; font-size: 13px; cursor: pointer; }
   .select-row { display: flex; gap: 6px; }
   .select-row select { flex: 1; margin-bottom: 0; }
-  .btn-sm {
-    background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;
-    border-radius: 8px; padding: 0 12px; font-size: 18px; cursor: pointer;
-    min-width: 38px; height: 40px;
-  }
-  .add-row { display: flex; gap: 6px; margin-top: 6px; }
+  .btn-sm { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0 12px; font-size: 18px; cursor: pointer; min-width: 38px; height: 40px; }
+  .add-row { display: flex; gap: 6px; }
   .add-row input { flex: 1; margin-bottom: 0; }
-  .foto-upload {
-    border: 2px dashed #cbd5e1; border-radius: 10px;
-    padding: 18px 12px; text-align: center; cursor: pointer;
-    background: #f8fafc; color: #64748b; font-size: 14px;
-  }
+  .foto-upload { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 18px 12px; text-align: center; cursor: pointer; background: #f8fafc; color: #64748b; font-size: 14px; }
   .foto-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .foto-thumb { position: relative; }
   .foto-thumb img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
-  .foto-thumb button {
-    position: absolute; top: -6px; right: -6px;
-    background: #dc2626; color: #fff; border: none;
-    border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;
-  }
-  .tag {
-    background: #f1f5f9; border-radius: 20px; padding: 4px 10px;
-    font-size: 13px; display: inline-flex; align-items: center; gap: 6px; margin: 3px;
-  }
+  .foto-thumb button { position: absolute; top: -6px; right: -6px; background: #dc2626; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; }
+  .tag { background: #f1f5f9; border-radius: 20px; padding: 4px 10px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; margin: 3px; }
   .tag span { cursor: pointer; color: #dc2626; }
 </style>
 </head>
@@ -162,7 +73,6 @@
 </div>
 
 <div class="container">
-  <!-- LIST VIEW -->
   <div id="view-list">
     <div id="error-box" class="error-box" style="display:none"></div>
     <input class="search-input" placeholder="🔍 Buscar cliente o dirección…" oninput="renderList()" id="search">
@@ -171,15 +81,20 @@
     <div class="stats" id="stats"></div>
   </div>
 
-  <!-- NEW VIEW -->
   <div id="view-new" style="display:none">
     <div class="card">
       <div class="tipo-selector" id="tipo-selector"></div>
       <div class="row2">
         <div>
-          <label>📅 Fecha</label>
+          <label>📅 Fecha instalación</label>
           <input type="date" id="f-fecha">
         </div>
+        <div>
+          <label>📅 Fecha Remate</label>
+          <input type="date" id="f-fecharemate">
+        </div>
+      </div>
+      <div class="row2">
         <div>
           <label>🔢 Nº Visita</label>
           <input type="number" min="1" id="f-visita" value="1">
@@ -193,10 +108,12 @@
       <p class="team-section">👷 Equipo</p>
       <div id="selects-equipo"></div>
       <div class="divider"></div>
-      <label id="mat-label">📦 Material</label>
-      <textarea id="f-materiales" rows="4" placeholder="Describe los materiales…"></textarea>
-      <label>📝 Observaciones</label>
-      <textarea id="f-observaciones" rows="3" placeholder="Trabajo pendiente, notas…"></textarea>
+      <label>📦 Material de Almacén y materiales a pedir a distintos proveedores</label>
+      <textarea id="f-materiales" rows="4" placeholder="Material de almacén y materiales a pedir…"></textarea>
+      <label>🏭 Material pedir a fábrica (Trae, Rekker, Inko, Fiona, Otro…)</label>
+      <textarea id="f-materialfabrica" rows="3" placeholder="Especifica proveedor y material…"></textarea>
+      <label>📝 Observaciones (trabajo pendiente, tiempo estimado, electros…)</label>
+      <textarea id="f-observaciones" rows="3" placeholder="Trabajo pendiente, notas del cliente…"></textarea>
       <label>📷 Fotos</label>
       <div class="foto-upload" onclick="document.getElementById('foto-input').click()">Toca para añadir fotos</div>
       <input type="file" id="foto-input" accept="image/*" multiple capture="environment" style="display:none" onchange="handleFotos(this)">
@@ -208,12 +125,10 @@
     </div>
   </div>
 
-  <!-- DETAIL VIEW -->
   <div id="view-detail" style="display:none">
     <div class="card" id="detail-content"></div>
   </div>
 
-  <!-- CONFIG VIEW -->
   <div id="view-config" style="display:none">
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
@@ -234,6 +149,8 @@ const TIPOS = {
   postventa: { label: "🛠 Nota de Postventa", color: "#dc2626" },
 };
 
+const HEADERS = ["id","tipo","fecha","fecharemate","cliente","direccion","visita","montador","ayudante","medidor","disenadora","materiales","materialfabrica","observaciones","fotos","creado"];
+
 const DEFAULT_CONFIG = {
   montadores: ["David","Alejandro","Beta","Carlos","Miguel","Javier"],
   ayudantes:  ["Beta","Carlos","Miguel","Javier","David","Alejandro"],
@@ -249,7 +166,6 @@ let config = JSON.parse(localStorage.getItem("l3_config") || JSON.stringify(DEFA
 
 function saveConfig() { localStorage.setItem("l3_config", JSON.stringify(config)); }
 
-// ── VIEWS ──────────────────────────────────────────────────────────────────
 function showView(v) {
   ["list","new","detail","config"].forEach(x => {
     document.getElementById("view-"+x).style.display = x === v ? "block" : "none";
@@ -258,7 +174,6 @@ function showView(v) {
   if (v === "config") renderConfig();
 }
 
-// ── LOAD ───────────────────────────────────────────────────────────────────
 async function loadNotas() {
   document.getElementById("lista").innerHTML = '<div class="loading"><div style="font-size:36px;margin-bottom:12px">⏳</div><div>Cargando notas…</div></div>';
   document.getElementById("error-box").style.display = "none";
@@ -267,12 +182,13 @@ async function loadNotas() {
     const data = await res.json();
     const rows = data.values || [];
     notas = rows.slice(1).map(r => ({
-      id: r[0]||"", tipo: r[1]||"montaje", fecha: r[2]||"",
-      cliente: r[3]||"", direccion: r[4]||"", visita: r[5]||"1",
-      montador: r[6]||"", ayudante: r[7]||"", medidor: r[8]||"",
-      disenadora: r[9]||"", materiales: r[10]||"", observaciones: r[11]||"",
-      fotos: r[12] ? (()=>{try{return JSON.parse(r[12]);}catch{return [];}})() : [],
-      creado: r[13]||""
+      id: r[0]||"", tipo: r[1]||"montaje", fecha: r[2]||"", fecharemate: r[3]||"",
+      cliente: r[4]||"", direccion: r[5]||"", visita: r[6]||"1",
+      montador: r[7]||"", ayudante: r[8]||"", medidor: r[9]||"",
+      disenadora: r[10]||"", materiales: r[11]||"", materialfabrica: r[12]||"",
+      observaciones: r[13]||"",
+      fotos: r[14] ? (()=>{try{return JSON.parse(r[14]);}catch{return [];}})() : [],
+      creado: r[15]||""
     }));
     renderList();
     renderStats();
@@ -283,7 +199,6 @@ async function loadNotas() {
   }
 }
 
-// ── RENDER LIST ────────────────────────────────────────────────────────────
 function renderFilterBar() {
   const bar = document.getElementById("filter-bar");
   const items = [["all","Todas"], ...Object.entries(TIPOS).map(([k,v])=>[k,v.label])];
@@ -334,7 +249,6 @@ function renderStats() {
   ).join("");
 }
 
-// ── DETAIL ─────────────────────────────────────────────────────────────────
 function showDetail(id) {
   const n = notas.find(x => String(x.id) === String(id));
   if (!n) return;
@@ -348,32 +262,34 @@ function showDetail(id) {
         <p style="color:#64748b;font-size:14px">${n.direccion}</p>
       </div>
       <div style="text-align:right;color:#94a3b8;font-size:13px">
-        <div>${n.fecha}</div><div>Visita #${n.visita}</div>
+        <div>${n.fecha}</div>
+        ${n.fecharemate?`<div style="margin-top:2px">Remate: ${n.fecharemate}</div>`:""}
+        <div>Visita #${n.visita}</div>
       </div>
     </div>
     <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:16px">
-      ${[["Montador",n.montador],["Ayudante",n.ayudante],["Medidor",n.medidor],["Diseñadora",n.disenadora]]
+      ${[["Montador",n.montador],["Ayudante",n.ayudante],["Medidor",n.medidor],["P.M.",n.disenadora]]
         .filter(([,v])=>v).map(([l,v])=>`<div class="detail-row"><span style="color:#64748b">${l}</span><span style="font-weight:600;color:#1e293b">${v}</span></div>`).join("")}
     </div>
-    ${n.materiales?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">${n.tipo==="postventa"?"Defecto/Fallo":"Material"}</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materiales}</p>`:""}
-    ${n.observaciones?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">Observaciones</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.observaciones}</p>`:""}
+    ${n.materiales?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">📦 Material Almacén</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materiales}</p>`:""}
+    ${n.materialfabrica?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">🏭 Material Fábrica</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materialfabrica}</p>`:""}
+    ${n.observaciones?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">📝 Observaciones</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.observaciones}</p>`:""}
     ${n.fotos?.length?`<p style="font-weight:700;font-size:13px;color:#475569;margin-bottom:8px">📷 Fotos (${n.fotos.length})</p><div class="foto-grid">${n.fotos.map(f=>`<img src="${f.data}" alt="${f.name}">`).join("")}</div>`:""}
-    <button class="btn-primary" style="margin-top:16px" onclick="exportPDF('${n.id}')">📄 Exportar PDF</button>
-  <button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>
+    <button class="btn-pdf" onclick="exportPDF('${n.id}')">📄 Exportar PDF</button>
+    <button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>
   `;
   showView("detail");
 }
 
-// ── SAVE ───────────────────────────────────────────────────────────────────
 async function saveNota() {
   const cliente = document.getElementById("f-cliente").value.trim();
   if (!cliente) { alert("Por favor indica el nombre del cliente."); return; }
   const btn = document.getElementById("btn-save");
   btn.textContent = "⏳ Guardando…"; btn.disabled = true;
   const nota = {
-    id: Date.now(),
-    tipo: currentTipo,
+    id: Date.now(), tipo: currentTipo,
     fecha: document.getElementById("f-fecha").value,
+    fecharemate: document.getElementById("f-fecharemate").value,
     cliente,
     direccion: document.getElementById("f-direccion").value,
     visita: document.getElementById("f-visita").value,
@@ -382,12 +298,12 @@ async function saveNota() {
     medidor: document.getElementById("f-medidor")?.value||"",
     disenadora: document.getElementById("f-disenadora")?.value||"",
     materiales: document.getElementById("f-materiales").value,
+    materialfabrica: document.getElementById("f-materialfabrica").value,
     observaciones: document.getElementById("f-observaciones").value,
     fotos: currentFotos,
     creado: new Date().toISOString()
   };
-  const row = ["id","tipo","fecha","cliente","direccion","visita","montador","ayudante","medidor","disenadora","materiales","observaciones","fotos","creado"]
-    .map(h => h==="fotos" ? JSON.stringify(nota[h]) : String(nota[h]||""));
+  const row = HEADERS.map(h => h==="fotos" ? JSON.stringify(nota[h]) : String(nota[h]||""));
   try {
     await fetch(SCRIPT_URL, { method:"POST", body: JSON.stringify({action:"append", row}) });
     notas.unshift(nota);
@@ -399,7 +315,6 @@ async function saveNota() {
   btn.textContent = "💾 Guardar Nota"; btn.disabled = false;
 }
 
-// ── DELETE ─────────────────────────────────────────────────────────────────
 async function deleteNota(id) {
   if (!confirm("¿Eliminar esta nota?")) return;
   await fetch(SCRIPT_URL, { method:"POST", body: JSON.stringify({action:"delete", id:String(id)}) });
@@ -408,23 +323,22 @@ async function deleteNota(id) {
   showView("list");
 }
 
-// ── FORM ───────────────────────────────────────────────────────────────────
 function initForm() {
   currentFotos = [];
   document.getElementById("foto-thumbs").innerHTML = "";
   document.getElementById("f-fecha").value = new Date().toISOString().slice(0,10);
+  document.getElementById("f-fecharemate").value = "";
   document.getElementById("f-visita").value = "1";
   document.getElementById("f-cliente").value = "";
   document.getElementById("f-direccion").value = "";
   document.getElementById("f-materiales").value = "";
+  document.getElementById("f-materialfabrica").value = "";
   document.getElementById("f-observaciones").value = "";
 
-  // Tipo selector
   document.getElementById("tipo-selector").innerHTML = Object.entries(TIPOS).map(([k,v]) =>
     `<button class="tipo-btn" id="tipo-btn-${k}" style="border-color:${currentTipo===k?v.color:'#e2e8f0'};background:${currentTipo===k?v.color+'18':'#fff'};color:${currentTipo===k?v.color:'#64748b'}" onclick="setTipo('${k}')">${v.label}</button>`
   ).join("");
 
-  // Selects equipo
   document.getElementById("selects-equipo").innerHTML = [
     ["Montador principal","montador","montadores"],
     ["Ayudante","ayudante","ayudantes"],
@@ -439,60 +353,36 @@ function initForm() {
       </select>
     </div>
   `).join("");
-
-  updateMatLabel();
 }
 
 function setTipo(t) {
   currentTipo = t;
   Object.entries(TIPOS).forEach(([k,v]) => {
     const btn = document.getElementById("tipo-btn-"+k);
-    if (btn) {
-      btn.style.borderColor = k===t ? v.color : "#e2e8f0";
-      btn.style.background = k===t ? v.color+"18" : "#fff";
-      btn.style.color = k===t ? v.color : "#64748b";
-    }
+    if (btn) { btn.style.borderColor = k===t?v.color:"#e2e8f0"; btn.style.background = k===t?v.color+"18":"#fff"; btn.style.color = k===t?v.color:"#64748b"; }
   });
-  updateMatLabel();
-}
-
-function updateMatLabel() {
-  const el = document.getElementById("mat-label");
-  if (el) el.textContent = currentTipo === "postventa" ? "🛠 Descripción del fallo" : "📦 Material";
 }
 
 function handleFotos(input) {
   Array.from(input.files).forEach(f => {
     const r = new FileReader();
-    r.onload = ev => {
-      currentFotos.push({name: f.name, data: ev.target.result});
-      renderFotoThumbs();
-    };
+    r.onload = ev => { currentFotos.push({name:f.name, data:ev.target.result}); renderFotoThumbs(); };
     r.readAsDataURL(f);
   });
 }
 
 function renderFotoThumbs() {
   document.getElementById("foto-thumbs").innerHTML = currentFotos.map((f,i) =>
-    `<div class="foto-thumb">
-      <img src="${f.data}" alt="${f.name}">
-      <button onclick="removeFoto(${i})">✕</button>
-    </div>`
+    `<div class="foto-thumb"><img src="${f.data}" alt="${f.name}"><button onclick="removeFoto(${i})">✕</button></div>`
   ).join("");
 }
 
-function removeFoto(i) {
-  currentFotos.splice(i, 1);
-  renderFotoThumbs();
-}
+function removeFoto(i) { currentFotos.splice(i,1); renderFotoThumbs(); }
 
-// ── CONFIG ─────────────────────────────────────────────────────────────────
 function renderConfig() {
   const fields = [
-    {key:"montadores",label:"👷 Montadores"},
-    {key:"ayudantes", label:"🙋 Ayudantes"},
-    {key:"medidores", label:"📐 Medidores"},
-    {key:"disenadoras",label:"🎨 Diseñadoras/PM"},
+    {key:"montadores",label:"👷 Montadores"},{key:"ayudantes",label:"🙋 Ayudantes"},
+    {key:"medidores",label:"📐 Medidores"},{key:"disenadoras",label:"🎨 Diseñadoras/PM"},
   ];
   document.getElementById("config-content").innerHTML = fields.map(({key,label}) => `
     <div style="margin-bottom:20px">
@@ -511,148 +401,121 @@ function renderConfig() {
 function addToConfig(key) {
   const input = document.getElementById("new-"+key);
   const val = input.value.trim();
-  if (val && !config[key].includes(val)) {
-    config[key].push(val);
-    saveConfig();
-    renderConfig();
-  }
+  if (val && !config[key].includes(val)) { config[key].push(val); saveConfig(); renderConfig(); }
   input.value = "";
 }
 
 function removeFromConfig(key, val) {
   config[key] = config[key].filter(x => x !== val);
-  saveConfig();
-  renderConfig();
+  saveConfig(); renderConfig();
 }
 
-// ── PDF ────────────────────────────────────────────────────────────────────
 function exportPDF(id) {
   const n = notas.find(x => String(x.id) === String(id));
   if (!n) return;
-  const t = TIPOS[n.tipo];
-
-  const conexiones = `
-    <label style="margin-right:16px">☐ Sí</label>
-    <label style="margin-right:16px">☐ No</label>
-    <label style="margin-right:16px">☐ Provisional</label>
-    <label>☐ Encimera Instalada</label>
-  `;
-  const fabricas = `
-    <label style="margin-right:16px">☐ Trae</label>
-    <label style="margin-right:16px">☐ Rekker</label>
-    <label style="margin-right:16px">☐ Inko</label>
-    <label style="margin-right:16px">☐ Fiona</label>
-    <label>☐ Otro</label>
-  `;
-
+  const tipoTitulo = { montaje:"NOTA DE MONTAJE", remate:"NOTA DE REMATES", postventa:"NOTA DE POSTVENTA" }[n.tipo];
+  const instaladores = [n.montador, n.ayudante, n.medidor].filter(Boolean).join(", ").toUpperCase();
   const fotoHTML = n.fotos?.length ? n.fotos.map(f =>
-    `<img src="${f.data}" style="width:48%;margin:1%;border-radius:6px;object-fit:cover;aspect-ratio:1">`
+    `<img src="${f.data}" style="width:48%;margin:1%;border-radius:4px;object-fit:cover;aspect-ratio:1">`
   ).join("") : "";
 
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
 <style>
-  @page { size: A4; margin: 15mm; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, sans-serif; font-size: 13px; color: #000; }
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 10px; }
-  .logo-text { font-size: 22px; font-weight: 300; letter-spacing: 1px; }
-  .logo-box { background: #000; color: #fff; border-radius: 6px; padding: 4px 8px; font-size: 18px; display: inline-block; margin-left: 6px; }
-  .logo-sub { font-size: 10px; color: #666; margin-top: 2px; }
-  .title-block { text-align: right; }
-  .title-block h1 { font-size: 18px; font-weight: 700; }
-  .title-block p { font-size: 11px; color: #444; }
-  table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-  td, th { border: 1px solid #999; padding: 5px 8px; font-size: 12px; }
-  .label { background: #f0f0f0; font-weight: 700; width: 130px; }
-  .section-title { background: #1e3a5f; color: #fff; font-weight: 700; padding: 5px 8px; font-size: 12px; margin: 10px 0 4px; }
-  .section-title-blue { color: #1e3a5f; font-weight: 700; padding: 5px 0; font-size: 12px; margin: 8px 0 4px; border-bottom: 1px solid #1e3a5f; }
-  .area { width: 100%; height: 120px; border: 1px solid #999; padding: 6px; font-size: 12px; }
-  .obs-area { width: 100%; height: 80px; border: 1px solid #999; padding: 6px; font-size: 12px; }
-  .badge { display:inline-block; padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; background: ${t.color}22; color: ${t.color}; border: 1px solid ${t.color}; }
-  .fotos { display: flex; flex-wrap: wrap; margin-top: 8px; }
-</style>
-</head>
-<body>
+  @page{size:A4;margin:12mm 15mm}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:12px;color:#000}
+  .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+  .logo-text{font-size:20px;font-weight:300;letter-spacing:2px;font-family:Georgia,serif}
+  .logo-icon{background:#000;color:#fff;border-radius:6px;padding:3px 7px;font-size:16px;font-family:Georgia,serif}
+  .logo-sub{font-size:9px;color:#888;margin-top:2px;font-style:italic}
+  .title-area{text-align:center;flex:1;padding-top:4px}
+  .title-area h1{font-size:16px;font-weight:900;letter-spacing:1px;border-bottom:2px solid #000;padding-bottom:4px;margin-bottom:4px}
+  .title-area p{font-size:10px;color:#333}
+  table{width:100%;border-collapse:collapse;margin-bottom:6px}
+  td{border:1px solid #aaa;padding:4px 7px;font-size:12px;vertical-align:middle}
+  .lbl{background:#ececec;font-weight:700;white-space:nowrap;width:1px}
+  .instaladores-bar{background:#d32f2f;color:#fff;font-weight:900;font-size:12px;padding:4px 8px;margin:6px 0 4px;letter-spacing:1px}
+  .section-blue{color:#1565c0;font-weight:700;font-size:11px;padding:4px 0 2px;border-bottom:1px solid #1565c0;margin:8px 0 3px;text-transform:uppercase}
+  .area{width:100%;min-height:90px;border:1px solid #aaa;padding:6px;font-size:12px;line-height:1.6}
+  .obs-area{width:100%;min-height:60px;border:1px solid #aaa;padding:6px;font-size:12px;line-height:1.6}
+  .box{display:inline-block;width:12px;height:12px;border:1.5px solid #000;margin-right:3px;vertical-align:middle}
+  .check-row{display:inline-flex;align-items:center;gap:14px;font-size:12px}
+  .fotos{display:flex;flex-wrap:wrap;margin-top:6px}
+</style></head><body>
 
 <div class="header">
   <div>
-    <div>
-      <span class="logo-text">línea</span>
-      <span class="logo-box">3≡</span>
-      <span class="logo-text"> cocinas</span>
-    </div>
-    <div class="logo-sub">Ideas que suman</div>
-    <div class="logo-sub" style="margin-top:4px;font-size:10px;color:#444">Línea 3 Diseño y Decoración de Cocinas S.L.</div>
+    <div><span class="logo-text">línea</span> <span class="logo-icon">3≡</span></div>
+    <div class="logo-sub">cocinas &nbsp;|&nbsp; Ideas que suman</div>
+    <div style="font-size:9px;color:#444;margin-top:3px">Línea 3 Diseño y Decoración de Cocinas S.L.</div>
   </div>
-  <div class="title-block">
-    <h1>${t.label.toUpperCase()}</h1>
-    <span class="badge">${t.label}</span>
+  <div class="title-area">
+    <h1>${tipoTitulo}</h1>
+    <p>Línea 3 Diseño y Decoración de Cocinas S.L.</p>
   </div>
+  <div style="min-width:80px"></div>
 </div>
 
 <table>
   <tr>
-    <td class="label">Fecha instalación</td>
-    <td>${n.fecha}</td>
-    <td class="label" style="width:100px">Nº Visita</td>
-    <td style="width:80px">${n.visita}</td>
-  </tr>
-  <tr>
-    <td class="label">Cliente/Pro</td>
-    <td>${n.cliente}</td>
-    <td class="label">P.M.</td>
-    <td>${n.disenadora}</td>
-  </tr>
-  <tr>
-    <td class="label">Dirección</td>
-    <td colspan="3">${n.direccion}</td>
+    <td class="lbl">FECHA DE INSTALACIÓN</td><td>${n.fecha}</td>
+    <td class="lbl" style="width:80px">Nº visita:</td><td style="width:50px">${n.visita}ª</td>
+    <td class="lbl" style="width:100px">Fecha Remate:</td><td style="width:90px">${n.fecharemate||""}</td>
   </tr>
 </table>
 
-<div class="section-title">INSTALADORES</div>
+<div class="instaladores-bar">INSTALADORES &nbsp;&nbsp; ${instaladores}</div>
+
 <table>
   <tr>
-    <td class="label">Montador</td>
-    <td>${n.montador}</td>
-    <td class="label">Ayudante</td>
-    <td>${n.ayudante}</td>
+    <td class="lbl">Cliente/Pro</td><td>${n.cliente.toUpperCase()}</td>
+    <td class="lbl" style="width:50px">P.M.:</td><td style="width:120px">${(n.disenadora||"").toUpperCase()}</td>
   </tr>
   <tr>
-    <td class="label">Medidor</td>
-    <td colspan="3">${n.medidor}</td>
+    <td class="lbl">Dirección</td><td colspan="3">${n.direccion.toUpperCase()}</td>
   </tr>
 </table>
 
 <table>
   <tr>
-    <td class="label">Conexiones</td>
-    <td>${conexiones}</td>
+    <td class="lbl">Conexiones</td>
+    <td><span class="check-row">
+      <span><span class="box"></span>Sí</span>
+      <span><span class="box"></span>No</span>
+      <span><span class="box"></span>Provisional</span>
+      <span><span class="box"></span>Encimera Instalada</span>
+    </span></td>
   </tr>
 </table>
 
-<div class="section-title-blue">Material de Almacén y materiales a pedir a distintos proveedores</div>
+<div class="section-blue">Material de Almacén y materiales a pedir a distintos proveedores</div>
 <div class="area">${(n.materiales||"").replace(/\n/g,"<br>")}</div>
 
-<div class="section-title-blue" style="margin-top:10px">Material pedir a fábrica: ${fabricas}</div>
+<div class="section-blue" style="margin-top:10px">
+  Material pedir a fábrica: &nbsp;
+  <span class="check-row">
+    <span><span class="box"></span>Trae</span>
+    <span><span class="box"></span>Rekker</span>
+    <span><span class="box"></span>Inko</span>
+    <span><span class="box"></span>Fiona</span>
+    <span><span class="box"></span>Otro</span>
+  </span>
+</div>
+<div class="area" style="min-height:60px">${(n.materialfabrica||"").replace(/\n/g,"<br>")}</div>
 
-<div class="section-title-blue" style="margin-top:10px">Observaciones (TRABAJO QUE QUEDA POR HACER, TIEMPO ESTIMADO, OBSERVACIONES DEL CLIENTE, ELECTROS)</div>
+<div class="section-blue" style="margin-top:10px">Observaciones (TRABAJO QUE QUEDA POR HACER, TIEMPO ESTIMADO, OBSERVACIONES DEL CLIENTE, ELECTROS)</div>
 <div class="obs-area">${(n.observaciones||"").replace(/\n/g,"<br>")}</div>
 
-${n.fotos?.length ? `<div class="section-title-blue" style="margin-top:10px">Fotos</div><div class="fotos">${fotoHTML}</div>` : ""}
+${n.fotos?.length?`<div class="section-blue" style="margin-top:10px">Fotos</div><div class="fotos">${fotoHTML}</div>`:""}
 
-</body>
-</html>`;
+</body></html>`;
 
-  const win = window.open("", "_blank");
+  const win = window.open("","_blank");
   win.document.write(html);
   win.document.close();
-  setTimeout(() => win.print(), 800);
+  setTimeout(()=>win.print(),800);
 }
 
-// ── INIT ───────────────────────────────────────────────────────────────────
 renderFilterBar();
 loadNotas();
 </script>
