@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Línea 3 Cocinas</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+  .header {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 14px 16px;
+    position: sticky; top: 0; z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .container { max-width: 600px; margin: 0 auto; padding: 16px; }
+  .card {
+    background: #fff; border-radius: 16px;
+    padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    margin-bottom: 16px;
+  }
+  label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+  input, select, textarea {
+    width: 100%; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid #e2e8f0; font-size: 14px;
+    font-family: inherit; outline: none; color: #1e293b;
+    background: #fff; margin-bottom: 12px;
+  }
+  textarea { resize: vertical; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-primary {
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 12px 16px; font-weight: 700; font-size: 15px;
+    cursor: pointer; width: 100%; margin-top: 8px;
+  }
+  .btn-sec {
+    background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;
+    border-radius: 8px; padding: 10px 14px;
+    font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+  .btn-danger {
+    background: #fff5f5; color: #dc2626; border: 1px solid #fecaca;
+    border-radius: 10px; padding: 12px; font-weight: 600;
+    font-size: 14px; cursor: pointer; width: 100%; margin-top: 16px;
+  }
+  .btn-icon {
+    background: rgba(255,255,255,0.08); color: #94a3b8;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px; width: 38px; height: 38px;
+    font-size: 18px; cursor: pointer;
+  }
+  .btn-new {
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 8px 16px; font-weight: 700; font-size: 14px;
+    cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.4);
+  }
+  .badge {
+    display: inline-block; border-radius: 6px;
+    padding: 2px 10px; font-size: 12px; font-weight: 700;
+  }
+  .filter-bar { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+  .filter-btn {
+    flex-shrink: 0; padding: 6px 14px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.06); color: #94a3b8;
+    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .filter-btn.active { background: #2563eb; border-color: #2563eb; color: #fff; }
+  .nota-card {
+    background: rgba(255,255,255,0.06); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 14px 16px; cursor: pointer;
+    margin-bottom: 10px; display: flex; justify-content: space-between;
+  }
+  .nota-card:hover { background: rgba(255,255,255,0.1); }
+  .search-input {
+    width: 100%; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08); color: #fff;
+    font-size: 14px; font-family: inherit; outline: none;
+    margin-bottom: 12px;
+  }
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 20px; }
+  .stat-box {
+    background: rgba(255,255,255,0.04); border-radius: 10px;
+    padding: 12px 8px; text-align: center;
+  }
+  .divider { height: 1px; background: #e2e8f0; margin: 16px 0; }
+  .team-section { font-weight: 700; font-size: 13px; color: #475569; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .detail-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px;
+  }
+  .foto-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .foto-grid img { width: calc(50% - 4px); border-radius: 10px; object-fit: cover; aspect-ratio: 1; border: 1px solid #e2e8f0; }
+  .error-box {
+    background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px;
+    padding: 12px 16px; margin-bottom: 16px; color: #dc2626; font-size: 14px;
+  }
+  .loading { text-align: center; padding: 60px 20px; color: #94a3b8; }
+  .empty { text-align: center; padding: 60px 20px; color: #475569; }
+  .tipo-selector { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tipo-btn {
+    padding: 8px 14px; border-radius: 8px; border: 2px solid #e2e8f0;
+    background: #fff; color: #64748b; font-weight: 700; font-size: 13px; cursor: pointer;
+  }
+  .select-row { display: flex; gap: 6px; }
+  .select-row select { flex: 1; margin-bottom: 0; }
+  .btn-sm {
+    background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;
+    border-radius: 8px; padding: 0 12px; font-size: 18px; cursor: pointer;
+    min-width: 38px; height: 40px;
+  }
+  .add-row { display: flex; gap: 6px; margin-top: 6px; }
+  .add-row input { flex: 1; margin-bottom: 0; }
+  .foto-upload {
+    border: 2px dashed #cbd5e1; border-radius: 10px;
+    padding: 18px 12px; text-align: center; cursor: pointer;
+    background: #f8fafc; color: #64748b; font-size: 14px;
+  }
+  .foto-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .foto-thumb { position: relative; }
+  .foto-thumb img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
+  .foto-thumb button {
+    position: absolute; top: -6px; right: -6px;
+    background: #dc2626; color: #fff; border: none;
+    border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;
+  }
+  .tag {
+    background: #f1f5f9; border-radius: 20px; padding: 4px 10px;
+    font-size: 13px; display: inline-flex; align-items: center; gap: 6px; margin: 3px;
+  }
+  .tag span { cursor: pointer; color: #dc2626; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <svg width="110" height="38" viewBox="0 0 110 38" fill="none">
+    <text x="0" y="20" font-family="Georgia,serif" font-size="15" font-weight="300" fill="white" letter-spacing="1">línea</text>
+    <text x="0" y="34" font-family="Georgia,serif" font-size="11" font-weight="300" fill="white" letter-spacing="1.5">cocinas</text>
+    <rect x="60" y="2" width="48" height="34" rx="8" fill="white"/>
+    <text x="68" y="26" font-family="Georgia,serif" font-size="22" fill="black">3</text>
+    <line x1="88" y1="13" x2="104" y2="13" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="88" y1="20" x2="104" y2="20" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="88" y1="27" x2="104" y2="27" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="btn-icon" onclick="loadNotas()" title="Actualizar">🔄</button>
+    <button class="btn-icon" onclick="showView('config')">⚙️</button>
+    <button class="btn-new" onclick="showView('new')">＋ Nueva</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- LIST VIEW -->
+  <div id="view-list">
+    <div id="error-box" class="error-box" style="display:none"></div>
+    <input class="search-input" placeholder="🔍 Buscar cliente o dirección…" oninput="renderList()" id="search">
+    <div class="filter-bar" id="filter-bar"></div>
+    <div id="lista"></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <!-- NEW VIEW -->
+  <div id="view-new" style="display:none">
+    <div class="card">
+      <div class="tipo-selector" id="tipo-selector"></div>
+      <div class="row2">
+        <div>
+          <label>📅 Fecha</label>
+          <input type="date" id="f-fecha">
+        </div>
+        <div>
+          <label>🔢 Nº Visita</label>
+          <input type="number" min="1" id="f-visita" value="1">
+        </div>
+      </div>
+      <label>👤 Cliente / Proyecto</label>
+      <input type="text" id="f-cliente" placeholder="Nombre del cliente…">
+      <label>📍 Dirección</label>
+      <input type="text" id="f-direccion" placeholder="Calle, número, piso…">
+      <div class="divider"></div>
+      <p class="team-section">👷 Equipo</p>
+      <div id="selects-equipo"></div>
+      <div class="divider"></div>
+      <label id="mat-label">📦 Material</label>
+      <textarea id="f-materiales" rows="4" placeholder="Describe los materiales…"></textarea>
+      <label>📝 Observaciones</label>
+      <textarea id="f-observaciones" rows="3" placeholder="Trabajo pendiente, notas…"></textarea>
+      <label>📷 Fotos</label>
+      <div class="foto-upload" onclick="document.getElementById('foto-input').click()">Toca para añadir fotos</div>
+      <input type="file" id="foto-input" accept="image/*" multiple capture="environment" style="display:none" onchange="handleFotos(this)">
+      <div class="foto-thumbs" id="foto-thumbs"></div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn-primary" onclick="saveNota()" id="btn-save">💾 Guardar Nota</button>
+      </div>
+      <button class="btn-sec" style="margin-top:10px;width:100%" onclick="showView('list')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- DETAIL VIEW -->
+  <div id="view-detail" style="display:none">
+    <div class="card" id="detail-content"></div>
+  </div>
+
+  <!-- CONFIG VIEW -->
+  <div id="view-config" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-size:18px;color:#0f172a">⚙️ Equipo</h2>
+        <button class="btn-sec" onclick="showView('list')">✕ Cerrar</button>
+      </div>
+      <div id="config-content"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_5akvRij0KRN7XjP5Ei7RGRizuNOJY4UHxIK7rmLSNerS8AYriACScHs8NsVsS9Ba/exec";
+
+const TIPOS = {
+  montaje:   { label: "📦 Nota de Montaje",   color: "#2563eb" },
+  remate:    { label: "🔧 Nota de Remate",    color: "#d97706" },
+  postventa: { label: "🛠 Nota de Postventa", color: "#dc2626" },
+};
+
+const DEFAULT_CONFIG = {
+  montadores: ["David","Alejandro","Beta","Carlos","Miguel","Javier"],
+  ayudantes:  ["Beta","Carlos","Miguel","Javier","David","Alejandro"],
+  medidores:  ["Alicia","Marta","Pedro","Luis"],
+  disenadoras:["Alicia","Marta","Sara","Elena"],
+};
+
+let notas = [];
+let currentTipo = "montaje";
+let currentFilter = "all";
+let currentFotos = [];
+let config = JSON.parse(localStorage.getItem("l3_config") || JSON.stringify(DEFAULT_CONFIG));
+
+function saveConfig() { localStorage.setItem("l3_config", JSON.stringify(config)); }
+
+// ── VIEWS ──────────────────────────────────────────────────────────────────
+function showView(v) {
+  ["list","new","detail","config"].forEach(x => {
+    document.getElementById("view-"+x).style.display = x === v ? "block" : "none";
+  });
+  if (v === "new") initForm();
+  if (v === "config") renderConfig();
+}
+
+// ── LOAD ───────────────────────────────────────────────────────────────────
+async function loadNotas() {
+  document.getElementById("lista").innerHTML = '<div class="loading"><div style="font-size:36px;margin-bottom:12px">⏳</div><div>Cargando notas…</div></div>';
+  document.getElementById("error-box").style.display = "none";
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    const rows = data.values || [];
+    notas = rows.slice(1).map(r => ({
+      id: r[0]||"", tipo: r[1]||"montaje", fecha: r[2]||"",
+      cliente: r[3]||"", direccion: r[4]||"", visita: r[5]||"1",
+      montador: r[6]||"", ayudante: r[7]||"", medidor: r[8]||"",
+      disenadora: r[9]||"", materiales: r[10]||"", observaciones: r[11]||"",
+      fotos: r[12] ? (()=>{try{return JSON.parse(r[12]);}catch{return [];}})() : [],
+      creado: r[13]||""
+    }));
+    renderList();
+    renderStats();
+  } catch(e) {
+    document.getElementById("error-box").style.display = "block";
+    document.getElementById("error-box").textContent = "⚠️ No se pudo conectar con Google Sheets.";
+    document.getElementById("lista").innerHTML = "";
+  }
+}
+
+// ── RENDER LIST ────────────────────────────────────────────────────────────
+function renderFilterBar() {
+  const bar = document.getElementById("filter-bar");
+  const items = [["all","Todas"], ...Object.entries(TIPOS).map(([k,v])=>[k,v.label])];
+  bar.innerHTML = items.map(([k,l]) =>
+    `<button class="filter-btn ${currentFilter===k?'active':''}" onclick="setFilter('${k}')">${l}</button>`
+  ).join("");
+}
+
+function setFilter(f) { currentFilter = f; renderFilterBar(); renderList(); }
+
+function renderList() {
+  const q = (document.getElementById("search")?.value||"").toLowerCase();
+  const filtered = notas.filter(n =>
+    (currentFilter === "all" || n.tipo === currentFilter) &&
+    (n.cliente.toLowerCase().includes(q) || n.direccion.toLowerCase().includes(q))
+  );
+  const el = document.getElementById("lista");
+  if (filtered.length === 0) {
+    el.innerHTML = '<div class="empty"><div style="font-size:48px;margin-bottom:12px">📋</div><div style="font-size:16px;font-weight:600;color:#94a3b8">No hay notas todavía</div><div style="font-size:14px;margin-top:6px">Pulsa "+ Nueva" para crear la primera</div></div>';
+    return;
+  }
+  el.innerHTML = filtered.map(n => {
+    const t = TIPOS[n.tipo];
+    return `<div class="nota-card" style="border-left:4px solid ${t.color}" onclick="showDetail('${n.id}')">
+      <div style="flex:1">
+        <div style="margin-bottom:4px">
+          <span class="badge" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}55">${t.label}</span>
+          ${n.fotos?.length ? `<span style="font-size:12px;color:#94a3b8;margin-left:6px">📷 ${n.fotos.length}</span>` : ""}
+        </div>
+        <div style="color:#f1f5f9;font-weight:700;font-size:16px">${n.cliente||"Sin nombre"}</div>
+        <div style="color:#94a3b8;font-size:13px;margin-top:2px">${n.direccion}</div>
+        ${(n.montador||n.ayudante)?`<div style="color:#64748b;font-size:12px;margin-top:4px">👷 ${[n.montador,n.ayudante].filter(Boolean).join(" + ")}</div>`:""}
+      </div>
+      <div style="text-align:right;color:#64748b;font-size:12px;flex-shrink:0;margin-left:10px">
+        <div>${n.fecha}</div><div>V.${n.visita}</div>
+        <div style="margin-top:6px;font-size:18px;color:#475569">›</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderStats() {
+  document.getElementById("stats").innerHTML = Object.entries(TIPOS).map(([k,v]) =>
+    `<div class="stat-box" style="border:1px solid ${v.color}33">
+      <div style="font-size:22px;font-weight:800;color:${v.color}">${notas.filter(n=>n.tipo===k).length}</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">${v.label.split(" ").slice(1).join(" ")}</div>
+    </div>`
+  ).join("");
+}
+
+// ── DETAIL ─────────────────────────────────────────────────────────────────
+function showDetail(id) {
+  const n = notas.find(x => String(x.id) === String(id));
+  if (!n) return;
+  const t = TIPOS[n.tipo];
+  document.getElementById("detail-content").innerHTML = `
+    <button class="btn-sec" onclick="showView('list')" style="margin-bottom:16px">← Volver</button>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+      <div>
+        <span class="badge" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}55">${t.label}</span>
+        <h2 style="margin:8px 0 4px;font-size:20px;color:#0f172a">${n.cliente||"Sin nombre"}</h2>
+        <p style="color:#64748b;font-size:14px">${n.direccion}</p>
+      </div>
+      <div style="text-align:right;color:#94a3b8;font-size:13px">
+        <div>${n.fecha}</div><div>Visita #${n.visita}</div>
+      </div>
+    </div>
+    <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:16px">
+      ${[["Montador",n.montador],["Ayudante",n.ayudante],["Medidor",n.medidor],["Diseñadora",n.disenadora]]
+        .filter(([,v])=>v).map(([l,v])=>`<div class="detail-row"><span style="color:#64748b">${l}</span><span style="font-weight:600;color:#1e293b">${v}</span></div>`).join("")}
+    </div>
+    ${n.materiales?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">${n.tipo==="postventa"?"Defecto/Fallo":"Material"}</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materiales}</p>`:""}
+    ${n.observaciones?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">Observaciones</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.observaciones}</p>`:""}
+    ${n.fotos?.length?`<p style="font-weight:700;font-size:13px;color:#475569;margin-bottom:8px">📷 Fotos (${n.fotos.length})</p><div class="foto-grid">${n.fotos.map(f=>`<img src="${f.data}" alt="${f.name}">`).join("")}</div>`:""}
+    <button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>
+  `;
+  showView("detail");
+}
+
+// ── SAVE ───────────────────────────────────────────────────────────────────
+async function saveNota() {
+  const cliente = document.getElementById("f-cliente").value.trim();
+  if (!cliente) { alert("Por favor indica el nombre del cliente."); return; }
+  const btn = document.getElementById("btn-save");
+  btn.textContent = "⏳ Guardando…"; btn.disabled = true;
+  const nota = {
+    id: Date.now(),
+    tipo: currentTipo,
+    fecha: document.getElementById("f-fecha").value,
+    cliente,
+    direccion: document.getElementById("f-direccion").value,
+    visita: document.getElementById("f-visita").value,
+    montador: document.getElementById("f-montador")?.value||"",
+    ayudante: document.getElementById("f-ayudante")?.value||"",
+    medidor: document.getElementById("f-medidor")?.value||"",
+    disenadora: document.getElementById("f-disenadora")?.value||"",
+    materiales: document.getElementById("f-materiales").value,
+    observaciones: document.getElementById("f-observaciones").value,
+    fotos: currentFotos,
+    creado: new Date().toISOString()
+  };
+  const row = ["id","tipo","fecha","cliente","direccion","visita","montador","ayudante","medidor","disenadora","materiales","observaciones","fotos","creado"]
+    .map(h => h==="fotos" ? JSON.stringify(nota[h]) : String(nota[h]||""));
+  try {
+    await fetch(SCRIPT_URL, { method:"POST", body: JSON.stringify({action:"append", row}) });
+    notas.unshift(nota);
+    renderList(); renderStats();
+    showView("list");
+  } catch(e) {
+    alert("Error al guardar. Comprueba la conexión.");
+  }
+  btn.textContent = "💾 Guardar Nota"; btn.disabled = false;
+}
+
+// ── DELETE ─────────────────────────────────────────────────────────────────
+async function deleteNota(id) {
+  if (!confirm("¿Eliminar esta nota?")) return;
+  await fetch(SCRIPT_URL, { method:"POST", body: JSON.stringify({action:"delete", id:String(id)}) });
+  notas = notas.filter(n => String(n.id) !== String(id));
+  renderList(); renderStats();
+  showView("list");
+}
+
+// ── FORM ───────────────────────────────────────────────────────────────────
+function initForm() {
+  currentFotos = [];
+  document.getElementById("foto-thumbs").innerHTML = "";
+  document.getElementById("f-fecha").value = new Date().toISOString().slice(0,10);
+  document.getElementById("f-visita").value = "1";
+  document.getElementById("f-cliente").value = "";
+  document.getElementById("f-direccion").value = "";
+  document.getElementById("f-materiales").value = "";
+  document.getElementById("f-observaciones").value = "";
+
+  // Tipo selector
+  document.getElementById("tipo-selector").innerHTML = Object.entries(TIPOS).map(([k,v]) =>
+    `<button class="tipo-btn" id="tipo-btn-${k}" style="border-color:${currentTipo===k?v.color:'#e2e8f0'};background:${currentTipo===k?v.color+'18':'#fff'};color:${currentTipo===k?v.color:'#64748b'}" onclick="setTipo('${k}')">${v.label}</button>`
+  ).join("");
+
+  // Selects equipo
+  document.getElementById("selects-equipo").innerHTML = [
+    ["Montador principal","montador","montadores"],
+    ["Ayudante","ayudante","ayudantes"],
+    ["Medidor","medidor","medidores"],
+    ["Diseñadora / P.M.","disenadora","disenadoras"]
+  ].map(([label,id,key]) => `
+    <label>${label}</label>
+    <div class="select-row">
+      <select id="f-${id}">
+        <option value="">— seleccionar —</option>
+        ${config[key].map(o=>`<option value="${o}">${o}</option>`).join("")}
+      </select>
+    </div>
+  `).join("");
+
+  updateMatLabel();
+}
+
+function setTipo(t) {
+  currentTipo = t;
+  Object.entries(TIPOS).forEach(([k,v]) => {
+    const btn = document.getElementById("tipo-btn-"+k);
+    if (btn) {
+      btn.style.borderColor = k===t ? v.color : "#e2e8f0";
+      btn.style.background = k===t ? v.color+"18" : "#fff";
+      btn.style.color = k===t ? v.color : "#64748b";
+    }
+  });
+  updateMatLabel();
+}
+
+function updateMatLabel() {
+  const el = document.getElementById("mat-label");
+  if (el) el.textContent = currentTipo === "postventa" ? "🛠 Descripción del fallo" : "📦 Material";
+}
+
+function handleFotos(input) {
+  Array.from(input.files).forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => {
+      currentFotos.push({name: f.name, data: ev.target.result});
+      renderFotoThumbs();
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+function renderFotoThumbs() {
+  document.getElementById("foto-thumbs").innerHTML = currentFotos.map((f,i) =>
+    `<div class="foto-thumb">
+      <img src="${f.data}" alt="${f.name}">
+      <button onclick="removeFoto(${i})">✕</button>
+    </div>`
+  ).join("");
+}
+
+function removeFoto(i) {
+  currentFotos.splice(i, 1);
+  renderFotoThumbs();
+}
+
+// ── CONFIG ─────────────────────────────────────────────────────────────────
+function renderConfig() {
+  const fields = [
+    {key:"montadores",label:"👷 Montadores"},
+    {key:"ayudantes", label:"🙋 Ayudantes"},
+    {key:"medidores", label:"📐 Medidores"},
+    {key:"disenadoras",label:"🎨 Diseñadoras/PM"},
+  ];
+  document.getElementById("config-content").innerHTML = fields.map(({key,label}) => `
+    <div style="margin-bottom:20px">
+      <p style="font-weight:700;font-size:14px;margin:0 0 8px;color:#334155">${label}</p>
+      <div id="tags-${key}" style="margin-bottom:8px">
+        ${config[key].map(name=>`<span class="tag">${name}<span onclick="removeFromConfig('${key}','${name}')">✕</span></span>`).join("")}
+      </div>
+      <div class="add-row">
+        <input id="new-${key}" placeholder="Añadir…" onkeydown="if(event.key==='Enter')addToConfig('${key}')">
+        <button class="btn-sm" onclick="addToConfig('${key}')">＋</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function addToConfig(key) {
+  const input = document.getElementById("new-"+key);
+  const val = input.value.trim();
+  if (val && !config[key].includes(val)) {
+    config[key].push(val);
+    saveConfig();
+    renderConfig();
+  }
+  input.value = "";
+}
+
+function removeFromConfig(key, val) {
+  config[key] = config[key].filter(x => x !== val);
+  saveConfig();
+  renderConfig();
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+renderFilterBar();
+loadNotas();
+</script>
+</body>
+</html>
