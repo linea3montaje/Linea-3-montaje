@@ -358,7 +358,8 @@ function showDetail(id) {
     ${n.materiales?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">${n.tipo==="postventa"?"Defecto/Fallo":"Material"}</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materiales}</p>`:""}
     ${n.observaciones?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">Observaciones</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.observaciones}</p>`:""}
     ${n.fotos?.length?`<p style="font-weight:700;font-size:13px;color:#475569;margin-bottom:8px">📷 Fotos (${n.fotos.length})</p><div class="foto-grid">${n.fotos.map(f=>`<img src="${f.data}" alt="${f.name}">`).join("")}</div>`:""}
-    <button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>
+    <button class="btn-primary" style="margin-top:16px" onclick="exportPDF('${n.id}')">📄 Exportar PDF</button>
+  <button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>
   `;
   showView("detail");
 }
@@ -522,6 +523,133 @@ function removeFromConfig(key, val) {
   config[key] = config[key].filter(x => x !== val);
   saveConfig();
   renderConfig();
+}
+
+// ── PDF ────────────────────────────────────────────────────────────────────
+function exportPDF(id) {
+  const n = notas.find(x => String(x.id) === String(id));
+  if (!n) return;
+  const t = TIPOS[n.tipo];
+
+  const conexiones = `
+    <label style="margin-right:16px">☐ Sí</label>
+    <label style="margin-right:16px">☐ No</label>
+    <label style="margin-right:16px">☐ Provisional</label>
+    <label>☐ Encimera Instalada</label>
+  `;
+  const fabricas = `
+    <label style="margin-right:16px">☐ Trae</label>
+    <label style="margin-right:16px">☐ Rekker</label>
+    <label style="margin-right:16px">☐ Inko</label>
+    <label style="margin-right:16px">☐ Fiona</label>
+    <label>☐ Otro</label>
+  `;
+
+  const fotoHTML = n.fotos?.length ? n.fotos.map(f =>
+    `<img src="${f.data}" style="width:48%;margin:1%;border-radius:6px;object-fit:cover;aspect-ratio:1">`
+  ).join("") : "";
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4; margin: 15mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 13px; color: #000; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+  .logo-text { font-size: 22px; font-weight: 300; letter-spacing: 1px; }
+  .logo-box { background: #000; color: #fff; border-radius: 6px; padding: 4px 8px; font-size: 18px; display: inline-block; margin-left: 6px; }
+  .logo-sub { font-size: 10px; color: #666; margin-top: 2px; }
+  .title-block { text-align: right; }
+  .title-block h1 { font-size: 18px; font-weight: 700; }
+  .title-block p { font-size: 11px; color: #444; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  td, th { border: 1px solid #999; padding: 5px 8px; font-size: 12px; }
+  .label { background: #f0f0f0; font-weight: 700; width: 130px; }
+  .section-title { background: #1e3a5f; color: #fff; font-weight: 700; padding: 5px 8px; font-size: 12px; margin: 10px 0 4px; }
+  .section-title-blue { color: #1e3a5f; font-weight: 700; padding: 5px 0; font-size: 12px; margin: 8px 0 4px; border-bottom: 1px solid #1e3a5f; }
+  .area { width: 100%; height: 120px; border: 1px solid #999; padding: 6px; font-size: 12px; }
+  .obs-area { width: 100%; height: 80px; border: 1px solid #999; padding: 6px; font-size: 12px; }
+  .badge { display:inline-block; padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; background: ${t.color}22; color: ${t.color}; border: 1px solid ${t.color}; }
+  .fotos { display: flex; flex-wrap: wrap; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div>
+      <span class="logo-text">línea</span>
+      <span class="logo-box">3≡</span>
+      <span class="logo-text"> cocinas</span>
+    </div>
+    <div class="logo-sub">Ideas que suman</div>
+    <div class="logo-sub" style="margin-top:4px;font-size:10px;color:#444">Línea 3 Diseño y Decoración de Cocinas S.L.</div>
+  </div>
+  <div class="title-block">
+    <h1>${t.label.toUpperCase()}</h1>
+    <span class="badge">${t.label}</span>
+  </div>
+</div>
+
+<table>
+  <tr>
+    <td class="label">Fecha instalación</td>
+    <td>${n.fecha}</td>
+    <td class="label" style="width:100px">Nº Visita</td>
+    <td style="width:80px">${n.visita}</td>
+  </tr>
+  <tr>
+    <td class="label">Cliente/Pro</td>
+    <td>${n.cliente}</td>
+    <td class="label">P.M.</td>
+    <td>${n.disenadora}</td>
+  </tr>
+  <tr>
+    <td class="label">Dirección</td>
+    <td colspan="3">${n.direccion}</td>
+  </tr>
+</table>
+
+<div class="section-title">INSTALADORES</div>
+<table>
+  <tr>
+    <td class="label">Montador</td>
+    <td>${n.montador}</td>
+    <td class="label">Ayudante</td>
+    <td>${n.ayudante}</td>
+  </tr>
+  <tr>
+    <td class="label">Medidor</td>
+    <td colspan="3">${n.medidor}</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td class="label">Conexiones</td>
+    <td>${conexiones}</td>
+  </tr>
+</table>
+
+<div class="section-title-blue">Material de Almacén y materiales a pedir a distintos proveedores</div>
+<div class="area">${(n.materiales||"").replace(/\n/g,"<br>")}</div>
+
+<div class="section-title-blue" style="margin-top:10px">Material pedir a fábrica: ${fabricas}</div>
+
+<div class="section-title-blue" style="margin-top:10px">Observaciones (TRABAJO QUE QUEDA POR HACER, TIEMPO ESTIMADO, OBSERVACIONES DEL CLIENTE, ELECTROS)</div>
+<div class="obs-area">${(n.observaciones||"").replace(/\n/g,"<br>")}</div>
+
+${n.fotos?.length ? `<div class="section-title-blue" style="margin-top:10px">Fotos</div><div class="fotos">${fotoHTML}</div>` : ""}
+
+</body>
+</html>`;
+
+  const win = window.open("", "_blank");
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => win.print(), 800);
 }
 
 // ── INIT ───────────────────────────────────────────────────────────────────
