@@ -54,6 +54,10 @@
   .fabrica-checks{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
   .fabrica-checks label{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:#1e293b;cursor:pointer;margin-bottom:0}
   .fabrica-checks input[type=checkbox]{width:18px;height:18px;margin:0;cursor:pointer}
+  .drive-box{background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:12px;margin-bottom:12px}
+  .drive-box label{color:#15803d;font-weight:700}
+  .drive-box input{margin-bottom:0;border-color:#86efac}
+  .aviso-drive{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;font-size:13px;color:#92400e;margin-top:8px}
 </style>
 </head>
 <body>
@@ -108,6 +112,13 @@
       <input type="text" id="f-cliente" placeholder="Nombre del cliente…" style="text-transform:uppercase">
       <label>📍 DIRECCIÓN</label>
       <input type="text" id="f-direccion" placeholder="Calle, número, piso…" style="text-transform:uppercase">
+
+      <div class="drive-box">
+        <label>📁 Enlace carpeta Drive del cliente</label>
+        <input type="url" id="f-drive" placeholder="https://drive.google.com/drive/folders/...">
+        <div style="font-size:12px;color:#16a34a;margin-top:2px">Opcional — si se añade, el PDF se guardará automáticamente en esa carpeta</div>
+      </div>
+
       <div class="divider"></div>
       <p class="team-section">👷 Equipo</p>
       <div id="selects-equipo"></div>
@@ -155,22 +166,17 @@
 
 <script>
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbz_5akvRij0KRN7XjP5Ei7RGRizuNOJY4UHxIK7rmLSNerS8AYriACScHs8NsVsS9Ba/exec";
-
-// Solo 2 tipos ahora
 const TIPOS={
   remate:   {label:"🔧 Nota de Remate",   color:"#d97706"},
   postventa:{label:"🛠 Nota de Postventa", color:"#dc2626"},
 };
-
-const HEADERS=["id","tipo","fecha","fecharemate","cliente","direccion","visita","montador","apoyo","medidor","disenadora","materiales","fabrica","materialfabrica","observaciones","fotos","creado"];
-
+const HEADERS=["id","tipo","fecha","fecharemate","cliente","direccion","visita","montador","apoyo","medidor","disenadora","materiales","fabrica","materialfabrica","observaciones","fotos","drive","creado"];
 const DEFAULT_CONFIG={
   montadores:["David","Alejandro","Beta","Carlos","Miguel","Javier"],
   apoyos:    ["Beta","Carlos","Miguel","Javier","David","Alejandro"],
   medidores: ["Alicia","Marta","Pedro","Luis"],
   disenadoras:["Alicia","Marta","Sara","Elena"],
 };
-
 let notas=[],currentTipo="remate",currentFilter="all",currentFotos=[];
 let config=JSON.parse(localStorage.getItem("l3_config")||JSON.stringify(DEFAULT_CONFIG));
 if(config.ayudantes&&!config.apoyos){config.apoyos=config.ayudantes;delete config.ayudantes;localStorage.setItem("l3_config",JSON.stringify(config));}
@@ -180,6 +186,12 @@ function fmtFecha(f){
   if(!f)return"";
   const[y,m,d]=f.split("-");
   return d&&m&&y?`${d}/${m}/${y}`:f;
+}
+
+function getFolderIdFromUrl(url){
+  if(!url)return null;
+  const m=url.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  return m?m[1]:null;
 }
 
 function showView(v){
@@ -201,7 +213,8 @@ async function loadNotas(){
       materiales:r[11]||"",fabrica:r[12]||"",materialfabrica:r[13]||"",
       observaciones:r[14]||"",
       fotos:r[15]?(()=>{try{return JSON.parse(r[15]);}catch{return[];}})():[],
-      creado:r[16]||""
+      drive:r[16]||"",
+      creado:r[17]||""
     }));
     renderList();renderStats();
   }catch(e){
@@ -235,6 +248,7 @@ function renderList(){
         <div style="margin-bottom:4px">
           <span class="badge" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}55">${t.label}</span>
           ${n.fotos?.length?`<span style="font-size:12px;color:#94a3b8;margin-left:6px">📷 ${n.fotos.length}</span>`:""}
+          ${n.drive?`<span style="font-size:12px;color:#16a34a;margin-left:6px">📁</span>`:""}
         </div>
         <div style="color:#f1f5f9;font-weight:700;font-size:16px">${n.cliente||"Sin nombre"}</div>
         <div style="color:#94a3b8;font-size:13px;margin-top:2px">${n.direccion}</div>
@@ -280,12 +294,13 @@ function showDetail(id){
       ${[["Montador",n.montador],["Apoyo de montaje",n.apoyo],["Medidor",n.medidor],["P.M.",n.disenadora]]
         .filter(([,v])=>v).map(([l,v])=>`<div class="detail-row"><span style="color:#64748b">${l}</span><span style="font-weight:600;color:#1e293b">${v}</span></div>`).join("")}
     </div>
+    ${n.drive?`<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:#15803d">📁 PDF se guardará en Drive del cliente</div>`:`<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:#92400e">⚠️ Sin carpeta Drive — el PDF solo se descargará</div>`}
     ${n.materiales?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">📦 Material Almacén</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materiales}</p>`:""}
     ${fabricas.length?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">🏭 Fábrica: ${fabricas.join(" · ")}</p>`:""}
     ${n.materialfabrica?`<p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materialfabrica}</p>`:""}
     ${n.observaciones?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">📝 Observaciones</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.observaciones}</p>`:""}
     ${n.fotos?.length?`<p style="font-weight:700;font-size:13px;color:#475569;margin-bottom:8px">📷 Fotos (${n.fotos.length})</p><div class="foto-grid">${n.fotos.map(f=>`<img src="${f.data}" alt="">`).join("")}</div>`:""}
-    <button class="btn-pdf" onclick="exportPDF('${n.id}')">📄 Exportar PDF Completo</button>
+    <button class="btn-pdf" id="btn-exportpdf" onclick="exportPDF('${n.id}')">📄 Exportar PDF Completo</button>
     <button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>
   `;
   showView("detail");
@@ -294,6 +309,7 @@ function showDetail(id){
 async function saveNota(){
   const cliente=document.getElementById("f-cliente").value.trim();
   if(!cliente){alert("Por favor indica el nombre del cliente.");return;}
+  const driveUrl=document.getElementById("f-drive").value.trim();
   const btn=document.getElementById("btn-save");
   btn.textContent="⏳ Guardando…";btn.disabled=true;
   const fabricaSel=["trae","rekker","inko","fiona","otro"]
@@ -315,6 +331,7 @@ async function saveNota(){
     materialfabrica:document.getElementById("f-materialfabrica").value.toUpperCase(),
     observaciones:document.getElementById("f-observaciones").value.toUpperCase(),
     fotos:currentFotos,
+    drive:driveUrl,
     creado:new Date().toISOString()
   };
   const row=HEADERS.map(h=>h==="fotos"?JSON.stringify(nota[h]):String(nota[h]||""));
@@ -338,6 +355,7 @@ function initForm(){
   document.getElementById("f-fecha").value=new Date().toISOString().slice(0,10);
   document.getElementById("f-fecharemate").value="";
   document.getElementById("f-visita").value="1";
+  document.getElementById("f-drive").value="";
   ["cliente","direccion","materiales","materialfabrica","observaciones"].forEach(f=>document.getElementById("f-"+f).value="");
   ["trae","rekker","inko","fiona","otro"].forEach(f=>{const el=document.getElementById("fab-"+f);if(el)el.checked=false;});
   document.getElementById("tipo-selector").innerHTML=Object.entries(TIPOS).map(([k,v])=>
@@ -408,42 +426,35 @@ function addToConfig(key){
 }
 function removeFromConfig(key,val){config[key]=(config[key]||[]).filter(x=>x!==val);saveConfig();renderConfig();}
 
-// ── LOGO para PDF ──────────────────────────────────────────────────────────
-const LOGO_HTML=`
-<table style="border:none;width:auto;margin:0">
-  <tr>
-    <td style="border:none;padding:0;vertical-align:middle;padding-right:6px">
-      <div style="font-family:Georgia,serif;font-size:26px;font-weight:300;letter-spacing:2px;line-height:1.1">línea</div>
-      <div style="font-family:Georgia,serif;font-size:17px;font-weight:300;letter-spacing:4px;line-height:1.3">cocinas</div>
-    </td>
-    <td style="border:none;padding:0 6px;vertical-align:middle">
-      <div style="background:#000;border-radius:9px;width:52px;height:52px;position:relative;display:inline-block">
-        <span style="font-family:Georgia,serif;font-size:28px;color:#fff;position:absolute;left:7px;top:9px;line-height:1">3</span>
-        <div style="position:absolute;right:7px;top:13px">
-          <div style="width:14px;height:2px;background:#fff;margin-bottom:5px;border-radius:1px"></div>
-          <div style="width:14px;height:2px;background:#fff;margin-bottom:5px;border-radius:1px"></div>
-          <div style="width:14px;height:2px;background:#fff;border-radius:1px"></div>
-        </div>
+// ── LOGO ──────────────────────────────────────────────────────────────────
+const LOGO_HTML=`<table style="border:none;width:auto;margin:0"><tr>
+  <td style="border:none;padding:0;vertical-align:middle;padding-right:6px">
+    <div style="font-family:Georgia,serif;font-size:26px;font-weight:300;letter-spacing:2px;line-height:1.1">línea</div>
+    <div style="font-family:Georgia,serif;font-size:17px;font-weight:300;letter-spacing:4px;line-height:1.3">cocinas</div>
+  </td>
+  <td style="border:none;padding:0 6px;vertical-align:middle">
+    <div style="background:#000;border-radius:9px;width:52px;height:52px;position:relative;display:inline-block">
+      <span style="font-family:Georgia,serif;font-size:28px;color:#fff;position:absolute;left:7px;top:9px;line-height:1">3</span>
+      <div style="position:absolute;right:7px;top:13px">
+        <div style="width:14px;height:2px;background:#fff;margin-bottom:5px;border-radius:1px"></div>
+        <div style="width:14px;height:2px;background:#fff;margin-bottom:5px;border-radius:1px"></div>
+        <div style="width:14px;height:2px;background:#fff;border-radius:1px"></div>
       </div>
-    </td>
-    <td style="border:none;padding:0;border-left:1.5px solid #000;vertical-align:middle;padding-left:10px">
-      <div style="font-family:Arial,sans-serif;font-size:15px;font-weight:300">Ideas que <strong style="font-weight:900">suman</strong></div>
-    </td>
-  </tr>
-</table>`;
+    </div>
+  </td>
+  <td style="border:none;padding:0;border-left:1.5px solid #000;vertical-align:middle;padding-left:10px">
+    <div style="font-family:Arial,sans-serif;font-size:15px;font-weight:300">Ideas que <strong style="font-weight:900">suman</strong></div>
+  </td>
+</tr></table>`;
 
-// ── PDF UNIFICADO (nota + fotos en páginas separadas) ──────────────────────
-function exportPDF(id){
-  const n=notas.find(x=>String(x.id)===String(id));
-  if(!n)return;
+// ── GENERAR HTML DEL PDF ───────────────────────────────────────────────────
+function generarHTMLPDF(n){
   const tipoTitulo={remate:"NOTA DE REMATES",postventa:"NOTA DE POSTVENTA"}[n.tipo]||"NOTA";
   const instaladores=[n.montador,n.apoyo].filter(Boolean).join(", ").toUpperCase();
   const fabricas=(n.fabrica||"").split(",").filter(Boolean);
 
-  // Página 1 — Nota
   const paginaNota=`
 <div style="page-break-after:${n.fotos?.length?"always":"auto"}">
-
 <table style="width:100%;border-collapse:collapse;margin-bottom:8px;border:none">
   <tr>
     <td style="border:none;padding:0;width:44%">${LOGO_HTML}</td>
@@ -454,7 +465,6 @@ function exportPDF(id){
     <td style="border:none;width:44%"></td>
   </tr>
 </table>
-
 <table style="width:100%;border-collapse:collapse;margin-bottom:5px">
   <tr>
     <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">FECHA DE INSTALACIÓN</td>
@@ -465,7 +475,6 @@ function exportPDF(id){
     <td style="border:1px solid #888;padding:4px 7px;font-weight:700;width:85px;font-size:11.5px">${fmtFecha(n.fecharemate)}</td>
   </tr>
 </table>
-
 <table style="width:100%;border-collapse:collapse;margin-bottom:5px">
   <tr>
     <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;width:1px;white-space:nowrap">
@@ -476,7 +485,6 @@ function exportPDF(id){
     <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px;text-transform:uppercase">${(n.medidor||"").toUpperCase()}</td>
   </tr>
 </table>
-
 <table style="width:100%;border-collapse:collapse;margin-bottom:5px">
   <tr>
     <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">CLIENTE/PRO</td>
@@ -489,7 +497,6 @@ function exportPDF(id){
     <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px" colspan="3">${n.direccion}</td>
   </tr>
 </table>
-
 <table style="width:100%;border-collapse:collapse;margin-bottom:5px">
   <tr>
     <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">CONEXIONES</td>
@@ -503,10 +510,8 @@ function exportPDF(id){
     </td>
   </tr>
 </table>
-
 <div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">MATERIAL DE ALMACÉN Y MATERIALES A PEDIR A DISTINTOS PROVEEDORES</div>
 <div style="width:100%;min-height:95px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.materiales||"").replace(/\n/g,"<br>")}</div>
-
 <div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">
   MATERIAL PEDIR A FÁBRICA &nbsp;
   <span style="display:inline-flex;gap:14px;align-items:center;font-size:11px;font-weight:600">
@@ -517,14 +522,11 @@ function exportPDF(id){
   </span>
 </div>
 <div style="width:100%;min-height:60px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.materialfabrica||"").replace(/\n/g,"<br>")}</div>
-
 <div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">OBSERVACIONES (TRABAJO QUE QUEDA POR HACER, TIEMPO ESTIMADO, OBSERVACIONES DEL CLIENTE, ELECTROS)</div>
 <div style="width:100%;min-height:60px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.observaciones||"").replace(/\n/g,"<br>")}</div>
-
 </div>`;
 
-  // Página 2 — Fotos (solo si hay)
-  const paginaFotos = n.fotos?.length ? `
+  const paginaFotos=n.fotos?.length?`
 <div style="page-break-before:always">
 <table style="width:100%;border-collapse:collapse;margin-bottom:10px;border:none">
   <tr>
@@ -539,22 +541,59 @@ function exportPDF(id){
 <div style="display:flex;flex-wrap:wrap;gap:8px">
   ${n.fotos.map(f=>`<img src="${f.data}" style="width:calc(50% - 4px);border-radius:6px;object-fit:cover;aspect-ratio:1;border:1px solid #ddd">`).join("")}
 </div>
-</div>` : "";
+</div>`:"";
 
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8">
 <style>
   @page{size:A4;margin:12mm 14mm}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:Arial,sans-serif;font-size:11.5px;color:#000;background:#fff}
 </style></head><body>
-${paginaNota}
-${paginaFotos}
+${paginaNota}${paginaFotos}
 </body></html>`;
+}
 
+// ── EXPORTAR PDF ───────────────────────────────────────────────────────────
+async function exportPDF(id){
+  const n=notas.find(x=>String(x.id)===String(id));
+  if(!n)return;
+
+  const html=generarHTMLPDF(n);
+  const folderId=getFolderIdFromUrl(n.drive);
+  const filename=`${n.cliente.replace(/\s+/g,"_")}_${fmtFecha(n.fecha).replace(/\//g,"-")}.pdf`;
+
+  // Abrir ventana de impresión siempre
   const w=window.open("","_blank");
   w.document.write(html);
   w.document.close();
   setTimeout(()=>w.print(),800);
+
+  // Si hay carpeta Drive, intentar guardar también
+  if(folderId){
+    const btn=document.getElementById("btn-exportpdf");
+    if(btn){btn.textContent="⏳ Guardando en Drive…";btn.disabled=true;}
+    try{
+      // Convertir HTML a blob base64 para enviar al script
+      const blob=new Blob([html],{type:"text/html"});
+      const reader=new FileReader();
+      reader.onload=async ev=>{
+        const base64=ev.target.result.split(",")[1];
+        const res=await fetch(SCRIPT_URL,{
+          method:"POST",
+          body:JSON.stringify({action:"savePDF",folderId,filename,pdfBase64:base64})
+        });
+        const data=await res.json();
+        if(btn){
+          btn.textContent=data.ok?"✅ Guardado en Drive":"⚠️ Error al guardar en Drive";
+          btn.disabled=false;
+          setTimeout(()=>{btn.textContent="📄 Exportar PDF Completo";},3000);
+        }
+      };
+      reader.readAsDataURL(blob);
+    }catch(e){
+      if(btn){btn.textContent="📄 Exportar PDF Completo";btn.disabled=false;}
+    }
+  }
 }
 
 renderFilterBar();
