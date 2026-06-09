@@ -16,7 +16,6 @@
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .btn-primary{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%;margin-top:8px}
   .btn-pdf{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-top:10px}
-  .btn-pdf2{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-top:8px}
   .btn-sec{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-weight:600;font-size:13px;cursor:pointer}
   .btn-danger{background:#fff5f5;color:#dc2626;border:1px solid #fecaca;border-radius:10px;padding:12px;font-weight:600;font-size:14px;cursor:pointer;width:100%;margin-top:10px}
   .btn-icon{background:rgba(255,255,255,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.15);border-radius:8px;width:38px;height:38px;font-size:18px;cursor:pointer}
@@ -27,7 +26,7 @@
   .filter-btn.active{background:#2563eb;border-color:#2563eb;color:#fff}
   .nota-card{background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;cursor:pointer;margin-bottom:10px;display:flex;justify-content:space-between}
   .search-input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:20px}
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px}
   .stat-box{background:rgba(255,255,255,0.04);border-radius:10px;padding:12px 8px;text-align:center}
   .divider{height:1px;background:#e2e8f0;margin:16px 0}
   .team-section{font-weight:700;font-size:13px;color:#475569;margin:0 0 10px;text-transform:uppercase;letter-spacing:1px}
@@ -156,27 +155,30 @@
 
 <script>
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbz_5akvRij0KRN7XjP5Ei7RGRizuNOJY4UHxIK7rmLSNerS8AYriACScHs8NsVsS9Ba/exec";
+
+// Solo 2 tipos ahora
 const TIPOS={
-  montaje:  {label:"📦 Nota de Montaje", color:"#2563eb"},
-  remate:   {label:"🔧 Nota de Remate",  color:"#d97706"},
-  postventa:{label:"🛠 Nota de Postventa",color:"#dc2626"},
+  remate:   {label:"🔧 Nota de Remate",   color:"#d97706"},
+  postventa:{label:"🛠 Nota de Postventa", color:"#dc2626"},
 };
+
 const HEADERS=["id","tipo","fecha","fecharemate","cliente","direccion","visita","montador","apoyo","medidor","disenadora","materiales","fabrica","materialfabrica","observaciones","fotos","creado"];
+
 const DEFAULT_CONFIG={
   montadores:["David","Alejandro","Beta","Carlos","Miguel","Javier"],
   apoyos:    ["Beta","Carlos","Miguel","Javier","David","Alejandro"],
   medidores: ["Alicia","Marta","Pedro","Luis"],
   disenadoras:["Alicia","Marta","Sara","Elena"],
 };
-let notas=[],currentTipo="montaje",currentFilter="all",currentFotos=[];
+
+let notas=[],currentTipo="remate",currentFilter="all",currentFotos=[];
 let config=JSON.parse(localStorage.getItem("l3_config")||JSON.stringify(DEFAULT_CONFIG));
-// migrate old config
 if(config.ayudantes&&!config.apoyos){config.apoyos=config.ayudantes;delete config.ayudantes;localStorage.setItem("l3_config",JSON.stringify(config));}
 function saveConfig(){localStorage.setItem("l3_config",JSON.stringify(config));}
 
 function fmtFecha(f){
   if(!f)return"";
-  const [y,m,d]=f.split("-");
+  const[y,m,d]=f.split("-");
   return d&&m&&y?`${d}/${m}/${y}`:f;
 }
 
@@ -193,7 +195,7 @@ async function loadNotas(){
     const res=await fetch(SCRIPT_URL);
     const data=await res.json();
     notas=(data.values||[]).slice(1).map(r=>({
-      id:r[0]||"",tipo:r[1]||"montaje",fecha:r[2]||"",fecharemate:r[3]||"",
+      id:r[0]||"",tipo:r[1]||"remate",fecha:r[2]||"",fecharemate:r[3]||"",
       cliente:r[4]||"",direccion:r[5]||"",visita:r[6]||"1",
       montador:r[7]||"",apoyo:r[8]||"",medidor:r[9]||"",disenadora:r[10]||"",
       materiales:r[11]||"",fabrica:r[12]||"",materialfabrica:r[13]||"",
@@ -227,7 +229,7 @@ function renderList(){
     return;
   }
   el.innerHTML=filtered.map(n=>{
-    const t=TIPOS[n.tipo];
+    const t=TIPOS[n.tipo]||TIPOS.remate;
     return `<div class="nota-card" style="border-left:4px solid ${t.color}" onclick="showDetail('${n.id}')">
       <div style="flex:1">
         <div style="margin-bottom:4px">
@@ -258,7 +260,7 @@ function renderStats(){
 function showDetail(id){
   const n=notas.find(x=>String(x.id)===String(id));
   if(!n)return;
-  const t=TIPOS[n.tipo];
+  const t=TIPOS[n.tipo]||TIPOS.remate;
   const fabricas=(n.fabrica||"").split(",").filter(Boolean);
   document.getElementById("detail-content").innerHTML=`
     <button class="btn-sec" onclick="showView('list')" style="margin-bottom:16px">← Volver</button>
@@ -283,8 +285,7 @@ function showDetail(id){
     ${n.materialfabrica?`<p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materialfabrica}</p>`:""}
     ${n.observaciones?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">📝 Observaciones</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.observaciones}</p>`:""}
     ${n.fotos?.length?`<p style="font-weight:700;font-size:13px;color:#475569;margin-bottom:8px">📷 Fotos (${n.fotos.length})</p><div class="foto-grid">${n.fotos.map(f=>`<img src="${f.data}" alt="">`).join("")}</div>`:""}
-    <button class="btn-pdf" onclick="exportPDF('${n.id}',false)">📄 PDF Nota</button>
-    ${n.fotos?.length?`<button class="btn-pdf2" onclick="exportPDF('${n.id}',true)">🖼 PDF Fotos</button>`:""}
+    <button class="btn-pdf" onclick="exportPDF('${n.id}')">📄 Exportar PDF Completo</button>
     <button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>
   `;
   showView("detail");
@@ -320,7 +321,7 @@ async function saveNota(){
   try{
     await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"append",row})});
     notas.unshift(nota);renderList();renderStats();showView("list");
-  }catch(e){alert("Error al guardar.");}
+  }catch(e){alert("Error al guardar. Comprueba la conexión.");}
   btn.textContent="💾 Guardar Nota";btn.disabled=false;
 }
 
@@ -407,154 +408,153 @@ function addToConfig(key){
 }
 function removeFromConfig(key,val){config[key]=(config[key]||[]).filter(x=>x!==val);saveConfig();renderConfig();}
 
-// ── PDF ────────────────────────────────────────────────────────────────────
-function exportPDF(id,soloFotos){
-  const n=notas.find(x=>String(x.id)===String(id));
-  if(!n)return;
-  const tipoTitulo={montaje:"NOTA DE MONTAJE",remate:"NOTA DE REMATES",postventa:"NOTA DE POSTVENTA"}[n.tipo];
-  const instaladores=[n.montador,n.apoyo].filter(Boolean).join(", ").toUpperCase();
-  const fabricas=(n.fabrica||"").split(",").filter(Boolean);
-
-  const LOGO=`<table style="border:none;margin:0;width:auto">
+// ── LOGO para PDF ──────────────────────────────────────────────────────────
+const LOGO_HTML=`
+<table style="border:none;width:auto;margin:0">
   <tr>
-    <td style="border:none;padding:0;vertical-align:middle">
-      <div style="font-family:Georgia,serif;font-size:28px;font-weight:300;letter-spacing:2px;line-height:1">línea</div>
-      <div style="font-family:Georgia,serif;font-size:18px;font-weight:300;letter-spacing:4px;line-height:1.4">cocinas</div>
+    <td style="border:none;padding:0;vertical-align:middle;padding-right:6px">
+      <div style="font-family:Georgia,serif;font-size:26px;font-weight:300;letter-spacing:2px;line-height:1.1">línea</div>
+      <div style="font-family:Georgia,serif;font-size:17px;font-weight:300;letter-spacing:4px;line-height:1.3">cocinas</div>
     </td>
-    <td style="border:none;padding:0 8px;vertical-align:middle">
-      <div style="background:#000;border-radius:10px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;position:relative">
-        <span style="font-family:Georgia,serif;font-size:30px;color:#fff;position:absolute;left:8px;top:10px">3</span>
-        <div style="position:absolute;right:8px;top:14px">
-          <div style="width:16px;height:2px;background:#fff;margin-bottom:5px"></div>
-          <div style="width:16px;height:2px;background:#fff;margin-bottom:5px"></div>
-          <div style="width:16px;height:2px;background:#fff"></div>
+    <td style="border:none;padding:0 6px;vertical-align:middle">
+      <div style="background:#000;border-radius:9px;width:52px;height:52px;position:relative;display:inline-block">
+        <span style="font-family:Georgia,serif;font-size:28px;color:#fff;position:absolute;left:7px;top:9px;line-height:1">3</span>
+        <div style="position:absolute;right:7px;top:13px">
+          <div style="width:14px;height:2px;background:#fff;margin-bottom:5px;border-radius:1px"></div>
+          <div style="width:14px;height:2px;background:#fff;margin-bottom:5px;border-radius:1px"></div>
+          <div style="width:14px;height:2px;background:#fff;border-radius:1px"></div>
         </div>
       </div>
     </td>
-    <td style="border:none;padding:0 0 0 10px;vertical-align:middle;border-left:1px solid #000">
-      <div style="font-family:Arial,sans-serif;font-size:16px;font-weight:300;padding-left:8px">Ideas que <strong>suman</strong></div>
+    <td style="border:none;padding:0;border-left:1.5px solid #000;vertical-align:middle;padding-left:10px">
+      <div style="font-family:Arial,sans-serif;font-size:15px;font-weight:300">Ideas que <strong style="font-weight:900">suman</strong></div>
     </td>
   </tr>
 </table>`;
 
-  if(soloFotos){
-    if(!n.fotos?.length){alert("Esta nota no tiene fotos.");return;}
-    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
-<style>
-  @page{size:A4;margin:12mm}*{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Arial,sans-serif;font-size:12px;background:#fff;color:#000}
-  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #000}
-  .fotos{display:flex;flex-wrap:wrap;gap:8px}
-  .fotos img{width:calc(50% - 4px);border-radius:4px;object-fit:cover;aspect-ratio:1}
-</style></head><body>
-<div class="top">
-  ${LOGO}
-  <div style="text-align:right">
-    <div style="font-weight:900;font-size:14px">${tipoTitulo} — FOTOS</div>
-    <div style="font-size:11px">${n.cliente}</div>
-    <div style="font-size:11px">${n.direccion}</div>
-    <div style="font-size:11px">${fmtFecha(n.fecha)}${n.fecharemate?" · Remate: "+fmtFecha(n.fecharemate):""}</div>
-  </div>
+// ── PDF UNIFICADO (nota + fotos en páginas separadas) ──────────────────────
+function exportPDF(id){
+  const n=notas.find(x=>String(x.id)===String(id));
+  if(!n)return;
+  const tipoTitulo={remate:"NOTA DE REMATES",postventa:"NOTA DE POSTVENTA"}[n.tipo]||"NOTA";
+  const instaladores=[n.montador,n.apoyo].filter(Boolean).join(", ").toUpperCase();
+  const fabricas=(n.fabrica||"").split(",").filter(Boolean);
+
+  // Página 1 — Nota
+  const paginaNota=`
+<div style="page-break-after:${n.fotos?.length?"always":"auto"}">
+
+<table style="width:100%;border-collapse:collapse;margin-bottom:8px;border:none">
+  <tr>
+    <td style="border:none;padding:0;width:44%">${LOGO_HTML}</td>
+    <td style="border:none;padding:0;text-align:center;vertical-align:middle">
+      <div style="font-size:16px;font-weight:900;letter-spacing:2px;border-bottom:2px solid #000;padding-bottom:3px;margin-bottom:3px">${tipoTitulo}</div>
+      <div style="font-size:9.5px;color:#333;letter-spacing:1px;text-transform:uppercase">LÍNEA 3 DISEÑO Y DECORACIÓN DE COCINAS S.L.</div>
+    </td>
+    <td style="border:none;width:44%"></td>
+  </tr>
+</table>
+
+<table style="width:100%;border-collapse:collapse;margin-bottom:5px">
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">FECHA DE INSTALACIÓN</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px">${fmtFecha(n.fecha)}</td>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:70px;font-size:10.5px;text-transform:uppercase">Nº VISITA</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;width:45px;font-size:11.5px">${n.visita}ª</td>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:105px;font-size:10.5px;text-transform:uppercase">FECHA REMATE</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;width:85px;font-size:11.5px">${fmtFecha(n.fecharemate)}</td>
+  </tr>
+</table>
+
+<table style="width:100%;border-collapse:collapse;margin-bottom:5px">
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;width:1px;white-space:nowrap">
+      <span style="color:#cc0000;font-weight:900;font-size:12px;letter-spacing:2px;text-transform:uppercase">INSTALADORES</span>
+    </td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:400;font-size:11.5px;text-transform:uppercase">${instaladores}</td>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:70px;font-size:10.5px;text-transform:uppercase">MEDIDOR</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px;text-transform:uppercase">${(n.medidor||"").toUpperCase()}</td>
+  </tr>
+</table>
+
+<table style="width:100%;border-collapse:collapse;margin-bottom:5px">
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">CLIENTE/PRO</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px">${n.cliente}</td>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:40px;font-size:10.5px">P.M.</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;width:120px;font-size:11.5px;text-transform:uppercase">${(n.disenadora||"").toUpperCase()}</td>
+  </tr>
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;font-size:10.5px;text-transform:uppercase">DIRECCIÓN</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px" colspan="3">${n.direccion}</td>
+  </tr>
+</table>
+
+<table style="width:100%;border-collapse:collapse;margin-bottom:5px">
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">CONEXIONES</td>
+    <td style="border:1px solid #888;padding:4px 7px">
+      <span style="display:inline-flex;gap:14px;align-items:center;font-size:11.5px;font-weight:600;text-transform:uppercase">
+        <span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle"></span>SÍ</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle"></span>NO</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle"></span>PROVISIONAL</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle"></span>ENCIMERA INSTALADA</span>
+      </span>
+    </td>
+  </tr>
+</table>
+
+<div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">MATERIAL DE ALMACÉN Y MATERIALES A PEDIR A DISTINTOS PROVEEDORES</div>
+<div style="width:100%;min-height:95px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.materiales||"").replace(/\n/g,"<br>")}</div>
+
+<div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">
+  MATERIAL PEDIR A FÁBRICA &nbsp;
+  <span style="display:inline-flex;gap:14px;align-items:center;font-size:11px;font-weight:600">
+    ${["Trae","Rekker","Inko","Fiona","Otro"].map(f=>{
+      const on=fabricas.map(x=>x.toLowerCase()).includes(f.toLowerCase());
+      return `<span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle;background:${on?"#000":"transparent"}"></span>${f.toUpperCase()}</span>`;
+    }).join("")}
+  </span>
 </div>
-<div class="fotos">${n.fotos.map(f=>`<img src="${f.data}">`).join("")}</div>
-</body></html>`;
-    const w=window.open("","_blank");w.document.write(html);w.document.close();setTimeout(()=>w.print(),800);
-    return;
-  }
+<div style="width:100%;min-height:60px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.materialfabrica||"").replace(/\n/g,"<br>")}</div>
+
+<div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">OBSERVACIONES (TRABAJO QUE QUEDA POR HACER, TIEMPO ESTIMADO, OBSERVACIONES DEL CLIENTE, ELECTROS)</div>
+<div style="width:100%;min-height:60px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.observaciones||"").replace(/\n/g,"<br>")}</div>
+
+</div>`;
+
+  // Página 2 — Fotos (solo si hay)
+  const paginaFotos = n.fotos?.length ? `
+<div style="page-break-before:always">
+<table style="width:100%;border-collapse:collapse;margin-bottom:10px;border:none">
+  <tr>
+    <td style="border:none;padding:0;width:44%">${LOGO_HTML}</td>
+    <td style="border:none;padding:0;text-align:center;vertical-align:middle">
+      <div style="font-size:16px;font-weight:900;letter-spacing:2px;border-bottom:2px solid #000;padding-bottom:3px;margin-bottom:3px">${tipoTitulo} — FOTOS</div>
+      <div style="font-size:9.5px;color:#333">${n.cliente} &nbsp;|&nbsp; ${fmtFecha(n.fecha)}</div>
+    </td>
+    <td style="border:none;width:44%"></td>
+  </tr>
+</table>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+  ${n.fotos.map(f=>`<img src="${f.data}" style="width:calc(50% - 4px);border-radius:6px;object-fit:cover;aspect-ratio:1;border:1px solid #ddd">`).join("")}
+</div>
+</div>` : "";
 
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
 <style>
   @page{size:A4;margin:12mm 14mm}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:Arial,sans-serif;font-size:11.5px;color:#000;background:#fff}
-  table{width:100%;border-collapse:collapse;margin-bottom:5px}
-  td{border:1px solid #888;padding:4px 7px;vertical-align:middle;font-size:11.5px}
-  .lbl{background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;text-transform:uppercase;font-size:10.5px}
-  .inst-label{color:#cc0000;font-weight:900;font-size:12px;letter-spacing:2px;text-transform:uppercase}
-  .inst-names{font-weight:400;font-size:12px;color:#000;text-transform:uppercase}
-  .sec{color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px}
-  .area{width:100%;min-height:95px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase}
-  .fab-area{width:100%;min-height:60px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase}
-  .obs-area{width:100%;min-height:60px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase}
-  .box{display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle}
-  .box.on{background:#000}
-  .checks{display:inline-flex;gap:14px;align-items:center;font-size:11.5px;font-weight:600;text-transform:uppercase}
 </style></head><body>
-
-<table style="margin-bottom:8px;border:none">
-  <tr>
-    <td style="border:none;padding:0;width:45%">${LOGO}</td>
-    <td style="border:none;padding:0;text-align:center;vertical-align:middle">
-      <div style="font-size:17px;font-weight:900;letter-spacing:2px;border-bottom:2px solid #000;padding-bottom:3px;margin-bottom:3px">${tipoTitulo}</div>
-      <div style="font-size:10px;color:#333;letter-spacing:1px;text-transform:uppercase">LÍNEA 3 DISEÑO Y DECORACIÓN DE COCINAS S.L.</div>
-    </td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td class="lbl">FECHA DE INSTALACIÓN</td>
-    <td style="font-weight:700">${fmtFecha(n.fecha)}</td>
-    <td class="lbl" style="width:70px">Nº VISITA</td>
-    <td style="width:45px;font-weight:700">${n.visita}ª</td>
-    <td class="lbl" style="width:105px">FECHA REMATE</td>
-    <td style="width:85px;font-weight:700">${fmtFecha(n.fecharemate)}</td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td style="background:#e0e0e0;width:1px;white-space:nowrap;padding:4px 7px">
-      <span class="inst-label">INSTALADORES</span>
-    </td>
-    <td><span class="inst-names">${instaladores}</span></td>
-    <td class="lbl" style="width:70px">MEDIDOR</td>
-    <td style="font-weight:700;text-transform:uppercase">${(n.medidor||"").toUpperCase()}</td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td class="lbl">CLIENTE/PRO</td>
-    <td style="font-weight:700">${n.cliente}</td>
-    <td class="lbl" style="width:40px">P.M.</td>
-    <td style="width:120px;font-weight:700">${(n.disenadora||"").toUpperCase()}</td>
-  </tr>
-  <tr>
-    <td class="lbl">DIRECCIÓN</td>
-    <td colspan="3" style="font-weight:700">${n.direccion}</td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td class="lbl">CONEXIONES</td>
-    <td><span class="checks">
-      <span><span class="box"></span>SÍ</span>
-      <span><span class="box"></span>NO</span>
-      <span><span class="box"></span>PROVISIONAL</span>
-      <span><span class="box"></span>ENCIMERA INSTALADA</span>
-    </span></td>
-  </tr>
-</table>
-
-<div class="sec">MATERIAL DE ALMACÉN Y MATERIALES A PEDIR A DISTINTOS PROVEEDORES</div>
-<div class="area">${(n.materiales||"").replace(/\n/g,"<br>")}</div>
-
-<div class="sec" style="margin-top:7px">
-  MATERIAL PEDIR A FÁBRICA &nbsp;
-  <span class="checks">
-    ${["Trae","Rekker","Inko","Fiona","Otro"].map(f=>`<span><span class="box ${fabricas.map(x=>x.toLowerCase()).includes(f.toLowerCase())?"on":""}"></span>${f.toUpperCase()}</span>`).join("")}
-  </span>
-</div>
-<div class="fab-area">${(n.materialfabrica||"").replace(/\n/g,"<br>")}</div>
-
-<div class="sec" style="margin-top:7px">OBSERVACIONES (TRABAJO QUE QUEDA POR HACER, TIEMPO ESTIMADO, OBSERVACIONES DEL CLIENTE, ELECTROS)</div>
-<div class="obs-area">${(n.observaciones||"").replace(/\n/g,"<br>")}</div>
-
+${paginaNota}
+${paginaFotos}
 </body></html>`;
 
-  const w=window.open("","_blank");w.document.write(html);w.document.close();setTimeout(()=>w.print(),800);
+  const w=window.open("","_blank");
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>w.print(),800);
 }
 
 renderFilterBar();
