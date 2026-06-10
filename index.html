@@ -95,10 +95,18 @@
       <div class="pin-dot" id="d3"></div>
     </div>
     <div class="pin-pad">
-      ${[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map(k=>
-        k===""?`<div></div>`:
-        `<button class="pin-btn" onclick="pinPress('${k}')">${k}</button>`
-      ).join("")}
+      <button class="pin-btn" onclick="pinPress('1')">1</button>
+      <button class="pin-btn" onclick="pinPress('2')">2</button>
+      <button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button>
+      <button class="pin-btn" onclick="pinPress('5')">5</button>
+      <button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button>
+      <button class="pin-btn" onclick="pinPress('8')">8</button>
+      <button class="pin-btn" onclick="pinPress('9')">9</button>
+      <div></div>
+      <button class="pin-btn" onclick="pinPress('0')">0</button>
+      <button class="pin-btn" onclick="pinPress('del')" style="font-size:18px">←</button>
     </div>
     <div class="pin-error" id="pin-error"></div>
   </div>
@@ -181,7 +189,7 @@ function getFolderIdFromUrl(url){if(!url)return null;const m=url.match(/\/folder
 // ── PIN LOGIN ──────────────────────────────────────────────────────────────
 let pinBuffer="";
 function pinPress(k){
-  if(k==="⌫"){pinBuffer=pinBuffer.slice(0,-1);}
+  if(k==="del"||k==="⌫"){pinBuffer=pinBuffer.slice(0,-1);}
   else if(pinBuffer.length<4){pinBuffer+=k;}
   updateDots();
   if(pinBuffer.length===4)checkPin();
