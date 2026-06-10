@@ -347,9 +347,12 @@ function showDetail(id){
 function startEdit(id){
   const n=notas.find(x=>String(x.id)===String(id));
   if(!n)return;
-  editingId=id;
+  editingId=String(id);
+  document.getElementById("view-list").style.display="none";
+  document.getElementById("view-detail").style.display="none";
+  document.getElementById("view-config").style.display="none";
+  document.getElementById("view-new").style.display="block";
   renderForm(n);
-  showView("new");
 }
 
 // ── FORM ───────────────────────────────────────────────────────────────────
