@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Línea 3 Cocinas</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -182,7 +185,11 @@ let userRole=null;
 let editingId=null;
 
 if(config.ayudantes&&!config.apoyos){config.apoyos=config.ayudantes;delete config.ayudantes;localStorage.setItem("l3_config",JSON.stringify(config));}
-function saveConfig(){localStorage.setItem("l3_config",JSON.stringify(config));}
+function saveConfig(){
+  localStorage.setItem("l3_config",JSON.stringify(config));
+  // Sincronizar con Sheets en segundo plano
+  fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"saveConfig",config})}).catch(()=>{});
+}
 function fmtFecha(f){if(!f)return"";const[y,m,d]=f.split("-");return d&&m&&y?`${d}/${m}/${y}`:f;}
 function getFolderIdFromUrl(url){if(!url)return null;const m=url.match(/\/folders\/([a-zA-Z0-9_-]+)/);return m?m[1]:null;}
 
@@ -236,6 +243,16 @@ function showView(v){
 async function loadNotas(){
   document.getElementById("sync-time").textContent="Actualizando…";
   document.getElementById("error-box").style.display="none";
+
+  // Mostrar caché primero si existe
+  const cached=localStorage.getItem("l3_notas_cache");
+  if(cached){
+    try{
+      notas=JSON.parse(cached);
+      renderList();renderStats();
+    }catch(e){}
+  }
+
   try{
     const res=await fetch(SCRIPT_URL+"?t="+Date.now());
     const data=await res.json();
@@ -248,13 +265,24 @@ async function loadNotas(){
       fotos:r[15]?(()=>{try{return JSON.parse(r[15]);}catch{return[];}})():[],
       drive:r[16]||"",creado:r[17]||""
     }));
+    localStorage.setItem("l3_notas_cache",JSON.stringify(notas));
+
+    // Sincronizar config del equipo desde Sheets
+    if(data.config&&Object.keys(data.config).length>0){
+      if(data.config.montadores)config.montadores=data.config.montadores;
+      if(data.config.apoyos)config.apoyos=data.config.apoyos;
+      if(data.config.medidores)config.medidores=data.config.medidores;
+      if(data.config.disenadoras)config.disenadoras=data.config.disenadoras;
+      saveConfig();
+    }
+
     const now=new Date();
     document.getElementById("sync-time").textContent=`Actualizado a las ${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`;
     renderList();renderStats();
   }catch(e){
     document.getElementById("error-box").style.display="block";
-    document.getElementById("error-box").textContent="⚠️ No se pudo conectar con Google Sheets.";
-    document.getElementById("sync-time").textContent="Error al actualizar";
+    document.getElementById("error-box").textContent="⚠️ No se pudo conectar. Mostrando datos guardados.";
+    document.getElementById("sync-time").textContent="Sin conexión";
   }
 }
 
@@ -310,6 +338,8 @@ function renderStats(){
 function showDetail(id){
   const n=notas.find(x=>String(x.id)===String(id));
   if(!n)return;
+  currentNota=n;
+  window._currentNotaId=String(id);
   const t=TIPOS[n.tipo]||TIPOS.remate;
   const fabricas=(n.fabrica||"").split(",").filter(Boolean);
   document.getElementById("detail-content").innerHTML=`
@@ -337,7 +367,8 @@ function showDetail(id){
     ${n.observaciones?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">📝 Observaciones</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.observaciones}</p>`:""}
     ${n.fotos?.length?`<p style="font-weight:700;font-size:13px;color:#475569;margin-bottom:8px">📷 Fotos (${n.fotos.length})</p><div class="foto-grid">${n.fotos.map(f=>`<img src="${f.data}" alt="">`).join("")}</div>`:""}
     <button class="btn-edit" onclick="startEdit('${n.id}')">✏️ Editar nota</button>
-    <button class="btn-pdf" id="btn-exportpdf" onclick="exportPDF('${n.id}')">📄 Exportar PDF Completo</button>
+    <button class="btn-pdf" id="btn-exportpdf" data-id="${n.id}" onclick="var btn=this;var nid=btn.getAttribute('data-id');var nota=notas.find(x=>String(x.id)===String(nid));if(!nota){btn.textContent='❌ Nota no encontrada';return;}exportPDF(nid);">📄 Exportar PDF Completo</button>
+    <div id="drive-status"></div>
     ${userRole==="admin"?`<button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>`:""}
   `;
   showView("detail");
@@ -660,36 +691,64 @@ function generarHTMLPDF(n){
 </head><body>${paginaNota}${paginaFotos}</body></html>`;
 }
 
+function exportPDFCurrent(){
+  const id=window._currentNotaId;
+  if(!id){alert("Error: recarga la app.");return;}
+  const n=notas.find(x=>String(x.id)===String(id));
+  if(!n){alert("Nota no encontrada. Pulsa 🔄 y vuelve a intentarlo.");return;}
+  currentNota=n;
+  exportPDF(id);
+}
+
 async function exportPDF(id){
   const n=notas.find(x=>String(x.id)===String(id));
-  if(!n)return;
+  if(!n){
+    alert("No se encontró la nota. Recarga la app.");
+    return;
+  }
   const html=generarHTMLPDF(n);
   const folderId=getFolderIdFromUrl(n.drive);
   const filename=`${n.cliente.replace(/\s+/g,"_")}_${fmtFecha(n.fecha).replace(/\//g,"-")}.pdf`;
   const btn=document.getElementById("btn-exportpdf");
+  const statusEl=document.getElementById("drive-status");
 
+  // Abrir PDF siempre
   const w=window.open("","_blank");
   w.document.write(html);w.document.close();
   setTimeout(()=>w.print(),800);
 
+  // Si hay carpeta Drive, enviar solo datos de texto
   if(folderId){
     if(btn){btn.textContent="⏳ Guardando en Drive…";btn.disabled=true;}
+    if(statusEl)statusEl.innerHTML="";
     try{
-      const blob=new Blob([html],{type:"text/html"});
-      const reader=new FileReader();
-      reader.onload=async ev=>{
-        const base64=ev.target.result.split(",")[1];
-        const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"savePDF",folderId,filename,htmlBase64:base64})});
-        const data=await res.json();
-        if(btn){
-          btn.textContent=data.ok?"✅ Guardado en Drive":"⚠️ Error: "+(data.error||"");
-          btn.disabled=false;
-          setTimeout(()=>{if(btn)btn.textContent="📄 Exportar PDF Completo";},4000);
-        }
+      const notaSinFotos={
+        id:String(n.id), tipo:String(n.tipo||"remate"),
+        fecha:String(n.fecha||""), fecharemate:String(n.fecharemate||""),
+        cliente:String(n.cliente||""), direccion:String(n.direccion||""),
+        visita:String(n.visita||"1"), montador:String(n.montador||""),
+        apoyo:String(n.apoyo||""), medidor:String(n.medidor||""),
+        disenadora:String(n.disenadora||""), materiales:String(n.materiales||""),
+        fabrica:String(n.fabrica||""), materialfabrica:String(n.materialfabrica||""),
+        observaciones:String(n.observaciones||"")
       };
-      reader.readAsDataURL(blob);
+      console.log("Enviando nota:", JSON.stringify(notaSinFotos));
+      const res=await fetch(SCRIPT_URL,{
+        method:"POST",
+        body:JSON.stringify({action:"savePDF",folderId,filename,nota:notaSinFotos})
+      });
+      const data=await res.json();
+      if(btn){btn.textContent="📄 Exportar PDF Completo";btn.disabled=false;}
+      if(statusEl){
+        if(data.ok){
+          statusEl.innerHTML='<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#15803d;display:flex;align-items:center;gap:8px">✅ PDF guardado correctamente en Drive</div>';
+        } else {
+          statusEl.innerHTML='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#dc2626;display:flex;align-items:center;gap:8px">❌ Error: '+(data.error||"inténtalo de nuevo")+'</div>';
+        }
+      }
     }catch(e){
       if(btn){btn.textContent="📄 Exportar PDF Completo";btn.disabled=false;}
+      if(statusEl)statusEl.innerHTML='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#dc2626">❌ No se pudo conectar con Drive</div>';
     }
   }
 }
