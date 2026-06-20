@@ -732,11 +732,27 @@ async function exportPDF(id){
         fabrica:String(n.fabrica||""), materialfabrica:String(n.materialfabrica||""),
         observaciones:String(n.observaciones||"")
       };
-      console.log("Enviando nota:", JSON.stringify(notaSinFotos));
-      const res=await fetch(SCRIPT_URL,{
+      if(statusEl)statusEl.innerHTML='<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;color:#1e40af">📡 Enviando petición a Drive…</div>';
+
+      const startTime=Date.now();
+      const fetchPromise=fetch(SCRIPT_URL,{
         method:"POST",
+        headers:{"Content-Type":"text/plain"},
         body:JSON.stringify({action:"savePDF",folderId,filename,nota:notaSinFotos})
       });
+
+      const timeoutPromise=new Promise((_,reject)=>
+        setTimeout(()=>reject(new Error("TIMEOUT tras 25 segundos")),25000)
+      );
+
+      const res=await Promise.race([fetchPromise,timeoutPromise]);
+      const elapsed=Date.now()-startTime;
+
+      if(statusEl)statusEl.innerHTML='<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;color:#1e40af">📡 Respuesta recibida en '+elapsed+'ms, status: '+res.status+'</div>';
+
+      if(!res.ok){
+        throw new Error("HTTP "+res.status+": "+res.statusText);
+      }
       const data=await res.json();
       if(btn){btn.textContent="📄 Exportar PDF Completo";btn.disabled=false;}
       if(statusEl){
@@ -748,7 +764,7 @@ async function exportPDF(id){
       }
     }catch(e){
       if(btn){btn.textContent="📄 Exportar PDF Completo";btn.disabled=false;}
-      if(statusEl)statusEl.innerHTML='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#dc2626">❌ No se pudo conectar con Drive</div>';
+      if(statusEl)statusEl.innerHTML='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#dc2626">❌ Error de conexión: '+e.message+'</div>';
     }
   }
 }
