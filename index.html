@@ -183,7 +183,6 @@ let notas=[],currentTipo="remate",currentFilter="all",currentFotos=[];
 let config=JSON.parse(localStorage.getItem("l3_config")||JSON.stringify(DEFAULT_CONFIG));
 let userRole=null;
 let editingId=null;
-let currentNota=null;
 
 if(config.ayudantes&&!config.apoyos){config.apoyos=config.ayudantes;delete config.ayudantes;localStorage.setItem("l3_config",JSON.stringify(config));}
 function saveConfig(){
