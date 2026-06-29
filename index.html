@@ -241,17 +241,19 @@ function showView(v){
 
 // ── LOAD ───────────────────────────────────────────────────────────────────
 async function loadNotas(){
-  document.getElementById("sync-time").textContent="Actualizando…";
-  document.getElementById("error-box").style.display="none";
-
-  // Mostrar caché primero si existe
+  // Mostrar caché INSTANTÁNEAMENTE
   const cached=localStorage.getItem("l3_notas_cache");
   if(cached){
     try{
       notas=JSON.parse(cached);
       renderList();renderStats();
+      const lastSync=localStorage.getItem("l3_last_sync");
+      document.getElementById("sync-time").textContent=lastSync?`Última sync: ${lastSync}`:"Cargado de caché";
     }catch(e){}
+  } else {
+    document.getElementById("sync-time").textContent="Cargando…";
   }
+  document.getElementById("error-box").style.display="none";
 
   try{
     const res=await fetch(SCRIPT_URL+"?t="+Date.now());
@@ -267,22 +269,27 @@ async function loadNotas(){
     }));
     localStorage.setItem("l3_notas_cache",JSON.stringify(notas));
 
-    // Sincronizar config del equipo desde Sheets
     if(data.config&&Object.keys(data.config).length>0){
       if(data.config.montadores)config.montadores=data.config.montadores;
       if(data.config.apoyos)config.apoyos=data.config.apoyos;
       if(data.config.medidores)config.medidores=data.config.medidores;
       if(data.config.disenadoras)config.disenadoras=data.config.disenadoras;
-      saveConfig();
+      if(data.config.pins){
+        if(data.config.pins[0]){PINS.admin=data.config.pins[0];}
+        if(data.config.pins[1]){PINS.montador=data.config.pins[1];}
+        localStorage.setItem("l3_pins",JSON.stringify({admin:PINS.admin,montador:PINS.montador}));
+      }
+      localStorage.setItem("l3_config",JSON.stringify(config));
     }
 
     const now=new Date();
-    document.getElementById("sync-time").textContent=`Actualizado a las ${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`;
+    const timeStr=`${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`;
+    localStorage.setItem("l3_last_sync",timeStr);
+    document.getElementById("sync-time").textContent=`Actualizado a las ${timeStr}`;
     renderList();renderStats();
   }catch(e){
-    document.getElementById("error-box").style.display="block";
-    document.getElementById("error-box").textContent="⚠️ No se pudo conectar. Mostrando datos guardados.";
-    document.getElementById("sync-time").textContent="Sin conexión";
+    const lastSync=localStorage.getItem("l3_last_sync");
+    document.getElementById("sync-time").textContent=lastSync?`Sin conexión · última sync ${lastSync}`:"Sin conexión";
   }
 }
 
@@ -559,7 +566,18 @@ function renderConfig(){
     {key:"medidores",label:"📐 Medidores"},
     {key:"disenadoras",label:"🎨 Diseñadoras/PM"},
   ];
-  document.getElementById("config-content").innerHTML=fields.map(({key,label})=>`
+  const pinsHTML=`
+    <div style="margin-bottom:24px;background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px">
+      <p style="font-weight:700;font-size:14px;margin:0 0 10px;color:#92400e">🔐 Cambiar PINs de acceso</p>
+      <label style="font-size:12px">PIN Administrador (4 dígitos)</label>
+      <input id="pin-admin-input" maxlength="4" inputmode="numeric" value="${PINS.admin}" style="margin-bottom:8px">
+      <label style="font-size:12px">PIN Montador (4 dígitos)</label>
+      <input id="pin-montador-input" maxlength="4" inputmode="numeric" value="${PINS.montador}" style="margin-bottom:8px">
+      <button class="btn-sm" style="width:100%;height:38px" onclick="savePins()">💾 Guardar PINs</button>
+      <div id="pin-save-status" style="font-size:12px;margin-top:6px"></div>
+    </div>
+  `;
+  document.getElementById("config-content").innerHTML=pinsHTML+fields.map(({key,label})=>`
     <div style="margin-bottom:20px">
       <p style="font-weight:700;font-size:14px;margin:0 0 8px;color:#334155">${label}</p>
       <div style="margin-bottom:8px">${(config[key]||[]).map(name=>`<span class="tag">${name}<span onclick="removeFromConfig('${key}','${name}')">✕</span></span>`).join("")}</div>
@@ -569,6 +587,34 @@ function renderConfig(){
       </div>
     </div>
   `).join("");
+}
+
+async function savePins(){
+  const newAdmin=document.getElementById("pin-admin-input").value.trim();
+  const newMontador=document.getElementById("pin-montador-input").value.trim();
+  const statusEl=document.getElementById("pin-save-status");
+  if(newAdmin.length!==4||!/^\d{4}$/.test(newAdmin)){
+    statusEl.innerHTML='<span style="color:#dc2626">❌ El PIN de Admin debe tener 4 números</span>';
+    return;
+  }
+  if(newMontador.length!==4||!/^\d{4}$/.test(newMontador)){
+    statusEl.innerHTML='<span style="color:#dc2626">❌ El PIN de Montador debe tener 4 números</span>';
+    return;
+  }
+  if(newAdmin===newMontador){
+    statusEl.innerHTML='<span style="color:#dc2626">❌ Los PINs deben ser diferentes</span>';
+    return;
+  }
+  PINS.admin=newAdmin;
+  PINS.montador=newMontador;
+  localStorage.setItem("l3_pins",JSON.stringify({admin:newAdmin,montador:newMontador}));
+  statusEl.innerHTML='<span style="color:#1e40af">⏳ Guardando…</span>';
+  try{
+    await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"saveConfig",config:{...config,pins:[newAdmin,newMontador]}})});
+    statusEl.innerHTML='<span style="color:#15803d">✅ PINs actualizados correctamente</span>';
+  }catch(e){
+    statusEl.innerHTML='<span style="color:#dc2626">❌ Error al guardar. Inténtalo de nuevo.</span>';
+  }
 }
 function addToConfig(key){
   const input=document.getElementById("new-"+key);
