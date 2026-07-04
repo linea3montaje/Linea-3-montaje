@@ -1,670 +1,775 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Línea 3 Cocinas</title>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Línea 3 Cocinas</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(160deg,#0f172a 0%,#1e3a5f 50%,#0f172a 100%);min-height:100vh;padding-bottom:60px}
+  .header{background:rgba(255,255,255,0.04);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);padding:14px 16px;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center}
+  .container{max-width:600px;margin:0 auto;padding:16px}
+  .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.25);margin-bottom:16px}
+  label{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:4px}
+  input,select,textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e2e8f0;font-size:14px;font-family:inherit;outline:none;color:#1e293b;background:#fff;margin-bottom:12px}
+  textarea{resize:vertical}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btn-primary{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%;margin-top:8px}
+  .btn-pdf{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-top:10px}
+  .btn-edit{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-top:8px}
+  .btn-sec{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-weight:600;font-size:13px;cursor:pointer}
+  .btn-danger{background:#fff5f5;color:#dc2626;border:1px solid #fecaca;border-radius:10px;padding:12px;font-weight:600;font-size:14px;cursor:pointer;width:100%;margin-top:10px}
+  .btn-icon{background:rgba(255,255,255,0.08);color:#94a3b8;border:1px solid rgba(255,255,255,0.15);border-radius:8px;width:38px;height:38px;font-size:18px;cursor:pointer}
+  .btn-new{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,0.4)}
+  .badge{display:inline-block;border-radius:6px;padding:2px 10px;font-size:12px;font-weight:700}
+  .filter-bar{display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;padding-bottom:4px}
+  .filter-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#94a3b8;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .filter-btn.active{background:#2563eb;border-color:#2563eb;color:#fff}
+  .nota-card{background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;cursor:pointer;margin-bottom:10px;display:flex;justify-content:space-between}
+  .search-input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px}
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px}
+  .stat-box{background:rgba(255,255,255,0.04);border-radius:10px;padding:12px 8px;text-align:center}
+  .divider{height:1px;background:#e2e8f0;margin:16px 0}
+  .team-section{font-weight:700;font-size:13px;color:#475569;margin:0 0 10px;text-transform:uppercase;letter-spacing:1px}
+  .detail-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #e2e8f0;font-size:14px}
+  .foto-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .foto-grid img{width:calc(50% - 4px);border-radius:10px;object-fit:cover;aspect-ratio:1;border:1px solid #e2e8f0}
+  .error-box{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;margin-bottom:16px;color:#dc2626;font-size:14px}
+  .loading{text-align:center;padding:60px 20px;color:#94a3b8}
+  .empty{text-align:center;padding:60px 20px;color:#475569}
+  .tipo-selector{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tipo-btn{padding:8px 14px;border-radius:8px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-weight:700;font-size:13px;cursor:pointer}
+  .select-row{display:flex;gap:6px}
+  .select-row select{flex:1;margin-bottom:0}
+  .btn-sm{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:8px;padding:0 12px;font-size:18px;cursor:pointer;min-width:38px;height:40px}
+  .add-row{display:flex;gap:6px}
+  .add-row input{flex:1;margin-bottom:0}
+  .foto-opciones{display:flex;gap:10px;margin-bottom:10px}
+  .foto-opciones button{flex:1;padding:10px;border-radius:8px;border:2px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:13px;font-weight:600;cursor:pointer}
+  .foto-thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .foto-thumb{position:relative}
+  .foto-thumb img{width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0}
+  .foto-thumb button{position:absolute;top:-6px;right:-6px;background:#dc2626;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer}
+  .tag{background:#f1f5f9;border-radius:20px;padding:4px 10px;font-size:13px;display:inline-flex;align-items:center;gap:6px;margin:3px}
+  .tag span{cursor:pointer;color:#dc2626}
+  .fabrica-checks{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+  .fabrica-checks label{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:#1e293b;cursor:pointer;margin-bottom:0}
+  .fabrica-checks input[type=checkbox]{width:18px;height:18px;margin:0;cursor:pointer}
+  .drive-box{background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:12px;margin-bottom:12px}
+  .drive-box label{color:#15803d;font-weight:700}
+  .drive-box input{margin-bottom:0;border-color:#86efac}
+  .sync-bar{background:rgba(255,255,255,0.05);border-radius:8px;padding:6px 12px;margin-bottom:12px;font-size:11px;color:#64748b;display:flex;justify-content:space-between;align-items:center}
+
+  /* LOGIN */
+  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .login-card{background:#fff;border-radius:20px;padding:32px 24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.4);text-align:center}
+  .pin-dots{display:flex;justify-content:center;gap:12px;margin:24px 0 16px}
+  .pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid #cbd5e1;background:#fff;transition:all 0.2s}
+  .pin-dot.filled{background:#2563eb;border-color:#2563eb}
+  .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+  .pin-btn{padding:16px;border-radius:12px;border:1px solid #e2e8f0;background:#f8fafc;font-size:22px;font-weight:700;cursor:pointer;color:#1e293b;transition:all 0.15s}
+  .pin-btn:active{background:#dbeafe;border-color:#2563eb}
+  .pin-error{color:#dc2626;font-size:13px;margin-top:8px;min-height:20px}
+  .role-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-left:8px}
+</style>
 </head>
 <body>
-  <div id="root"></div>
-  <script type="text/babel" data-presets="react">
-const { useState, useEffect, useRef } = React;
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRH29fg7I_RCAU9VBakZP1jXj0P9JQkUd8EduRd4TqQiYvlddFXr-J1Cbe4nmUugYN/exec";
+<!-- LOGIN -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <svg width="120" height="44" viewBox="0 0 120 44" fill="none" style="margin-bottom:8px">
+      <text x="0" y="22" font-family="Georgia,serif" font-size="16" font-weight="300" fill="#0f172a" letter-spacing="1">línea</text>
+      <text x="0" y="38" font-family="Georgia,serif" font-size="12" font-weight="300" fill="#0f172a" letter-spacing="1.5">cocinas</text>
+      <rect x="66" y="2" width="36" height="36" rx="7" fill="#0f172a"/>
+      <text x="72" y="28" font-family="Georgia,serif" font-size="22" fill="white">3</text>
+      <line x1="86" y1="13" x2="98" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      <line x1="86" y1="20" x2="98" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      <line x1="86" y1="27" x2="98" y2="27" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <p style="font-size:13px;color:#64748b;margin-bottom:4px">Introduce tu PIN de acceso</p>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="pinPress('1')">1</button>
+      <button class="pin-btn" onclick="pinPress('2')">2</button>
+      <button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button>
+      <button class="pin-btn" onclick="pinPress('5')">5</button>
+      <button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button>
+      <button class="pin-btn" onclick="pinPress('8')">8</button>
+      <button class="pin-btn" onclick="pinPress('9')">9</button>
+      <div></div>
+      <button class="pin-btn" onclick="pinPress('0')">0</button>
+      <button class="pin-btn" onclick="pinPress('del')" style="font-size:18px">←</button>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+</div>
 
-const INITIAL_CONFIG = {
-  montadores: ["David","Alejandro","Beta","Carlos","Miguel","Javier"],
-  ayudantes:  ["Beta","Carlos","Miguel","Javier","David","Alejandro"],
-  medidores:  ["Alicia","Marta","Pedro","Luis"],
+<!-- APP -->
+<div id="app-screen" style="display:none">
+<div class="header">
+  <div style="display:flex;align-items:center;gap:8px">
+    <svg width="110" height="38" viewBox="0 0 110 38" fill="none">
+      <text x="0" y="20" font-family="Georgia,serif" font-size="15" font-weight="300" fill="white" letter-spacing="1">línea</text>
+      <text x="0" y="34" font-family="Georgia,serif" font-size="11" font-weight="300" fill="white" letter-spacing="1.5">cocinas</text>
+      <rect x="60" y="2" width="34" height="34" rx="7" fill="white"/>
+      <text x="65" y="26" font-family="Georgia,serif" font-size="20" fill="black">3</text>
+      <line x1="79" y1="13" x2="91" y2="13" stroke="black" stroke-width="2" stroke-linecap="round"/>
+      <line x1="79" y1="20" x2="91" y2="20" stroke="black" stroke-width="2" stroke-linecap="round"/>
+      <line x1="79" y1="27" x2="91" y2="27" stroke="black" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span id="role-badge" class="role-badge"></span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="btn-icon" onclick="loadNotas()" title="Actualizar">🔄</button>
+    <button class="btn-icon" id="btn-config" onclick="showView('config')">⚙️</button>
+    <button class="btn-new" id="btn-nueva" onclick="showView('new')">＋ Nueva</button>
+  </div>
+</div>
+
+<div class="container">
+  <div id="view-list">
+    <div id="error-box" class="error-box" style="display:none"></div>
+    <div class="sync-bar">
+      <span id="sync-time">Actualizando…</span>
+      <button onclick="loadNotas()" style="background:none;border:none;color:#2563eb;font-size:12px;cursor:pointer;font-weight:600">Actualizar</button>
+    </div>
+    <input class="search-input" placeholder="🔍 Buscar cliente o dirección…" oninput="renderList()" id="search">
+    <div class="filter-bar" id="filter-bar"></div>
+    <div id="lista"></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div id="view-new" style="display:none"><div class="card" id="form-content"></div></div>
+  <div id="view-detail" style="display:none"><div class="card" id="detail-content"></div></div>
+  <div id="view-config" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-size:18px;color:#0f172a">⚙️ Equipo</h2>
+        <button class="btn-sec" onclick="showView('list')">✕ Cerrar</button>
+      </div>
+      <div id="config-content"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbz_5akvRij0KRN7XjP5Ei7RGRizuNOJY4UHxIK7rmLSNerS8AYriACScHs8NsVsS9Ba/exec";
+const PINS={admin:"2667",montador:"2026"};
+const TIPOS={
+  remate:   {label:"🔧 Nota de Remate",   color:"#d97706"},
+  postventa:{label:"🛠 Nota de Postventa", color:"#dc2626"},
+};
+const HEADERS=["id","tipo","fecha","fecharemate","cliente","direccion","visita","montador","apoyo","medidor","disenadora","materiales","fabrica","materialfabrica","observaciones","fotos","drive","creado"];
+const DEFAULT_CONFIG={
+  montadores:["David","Alejandro","Beta","Carlos","Miguel","Javier"],
+  apoyos:    ["Beta","Carlos","Miguel","Javier","David","Alejandro"],
+  medidores: ["Alicia","Marta","Pedro","Luis"],
   disenadoras:["Alicia","Marta","Sara","Elena"],
 };
 
-const TIPO_NOTA = {
-  montaje:   { label: "📦 Nota de Montaje",   color: "#2563eb" },
-  remate:    { label: "🔧 Nota de Remate",    color: "#d97706" },
-  postventa: { label: "🛠 Nota de Postventa", color: "#dc2626" },
-};
+let notas=[],currentTipo="remate",currentFilter="all",currentFotos=[];
+let config=JSON.parse(localStorage.getItem("l3_config")||JSON.stringify(DEFAULT_CONFIG));
+let userRole=null;
+let editingId=null;
 
-const HEADERS = [
-  "id","tipo","fecha","cliente","direccion","visita",
-  "montador","ayudante","medidor","disenadora",
-  "materiales","observaciones","fotos","creado"
-];
+if(config.ayudantes&&!config.apoyos){config.apoyos=config.ayudantes;delete config.ayudantes;localStorage.setItem("l3_config",JSON.stringify(config));}
+function saveConfig(){
+  localStorage.setItem("l3_config",JSON.stringify(config));
+  // Sincronizar con Sheets en segundo plano
+  fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"saveConfig",config})}).catch(()=>{});
+}
+function fmtFecha(f){if(!f)return"";const[y,m,d]=f.split("-");return d&&m&&y?`${d}/${m}/${y}`:f;}
+function getFolderIdFromUrl(url){if(!url)return null;const m=url.match(/\/folders\/([a-zA-Z0-9_-]+)/);return m?m[1]:null;}
 
-// ─── API helpers ──────────────────────────────────────────────────────────────
-async function fetchData() {
-  const res = await fetch(SCRIPT_URL);
-  const data = await res.json();
-  if (data.ok === false) throw new Error(data.error || "Error al cargar datos");
-  const rows = data.values || [];
-  let notas = [];
-  if (rows.length >= 2) {
-    const [, ...dataRows] = rows;
-    notas = dataRows.map(r => ({
-      id:            r[0]  || "",
-      tipo:          r[1]  || "montaje",
-      fecha:         r[2]  || "",
-      cliente:       r[3]  || "",
-      direccion:     r[4]  || "",
-      visita:        r[5]  || "1",
-      montador:      r[6]  || "",
-      ayudante:      r[7]  || "",
-      medidor:       r[8]  || "",
-      disenadora:    r[9]  || "",
-      materiales:    r[10] || "",
-      observaciones: r[11] || "",
-      fotos:         r[12] ? (() => { try { return JSON.parse(r[12]); } catch { return []; } })() : [],
-      creado:        r[13] || "",
-    }));
+// ── PIN LOGIN ──────────────────────────────────────────────────────────────
+let pinBuffer="";
+function pinPress(k){
+  if(k==="del"||k==="⌫"){pinBuffer=pinBuffer.slice(0,-1);}
+  else if(pinBuffer.length<4){pinBuffer+=k;}
+  updateDots();
+  if(pinBuffer.length===4)checkPin();
+}
+function updateDots(){
+  for(let i=0;i<4;i++){
+    document.getElementById("d"+i).className="pin-dot"+(i<pinBuffer.length?" filled":"");
   }
-  return { notas, config: data.config || null };
+}
+function checkPin(){
+  if(pinBuffer===PINS.admin){login("admin");}
+  else if(pinBuffer===PINS.montador){login("montador");}
+  else{
+    document.getElementById("pin-error").textContent="PIN incorrecto. Inténtalo de nuevo.";
+    pinBuffer="";updateDots();
+    setTimeout(()=>document.getElementById("pin-error").textContent="",2000);
+  }
+}
+function login(role){
+  userRole=role;
+  document.getElementById("login-screen").style.display="none";
+  document.getElementById("app-screen").style.display="block";
+  const badge=document.getElementById("role-badge");
+  if(role==="admin"){
+    badge.textContent="Admin";badge.style.background="#dbeafe";badge.style.color="#1d4ed8";
+    document.getElementById("btn-nueva").style.display="";
+    document.getElementById("btn-config").style.display="";
+  } else {
+    badge.textContent="Montador";badge.style.background="#fef3c7";badge.style.color="#92400e";
+    document.getElementById("btn-nueva").style.display="";
+    document.getElementById("btn-config").style.display="none";
+  }
+  loadNotas();
 }
 
-async function appendNota(nota) {
-  const row = HEADERS.map(h => {
-    const v = nota[h];
-    return h === "fotos" ? JSON.stringify(v || []) : String(v ?? "");
-  });
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify({ action: "append", row }),
-  });
-  const data = await res.json();
-  if (!data.ok) throw new Error(data.error || "Error al guardar en el servidor");
-  return data;
+// ── VIEWS ──────────────────────────────────────────────────────────────────
+function showView(v){
+  ["list","new","detail","config"].forEach(x=>document.getElementById("view-"+x).style.display=x===v?"block":"none");
+  if(v==="new"){editingId=null;renderForm(null);}
+  if(v==="config")renderConfig();
 }
 
-async function deleteNota(id) {
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify({ action: "delete", id: String(id) }),
-  });
-  const data = await res.json();
-  if (!data.ok) throw new Error(data.error || "Error al eliminar en el servidor");
-  return data;
+// ── LOAD ───────────────────────────────────────────────────────────────────
+async function loadNotas(){
+  document.getElementById("sync-time").textContent="Actualizando…";
+  document.getElementById("error-box").style.display="none";
+
+  // Mostrar caché primero si existe
+  const cached=localStorage.getItem("l3_notas_cache");
+  if(cached){
+    try{
+      notas=JSON.parse(cached);
+      renderList();renderStats();
+    }catch(e){}
+  }
+
+  try{
+    const res=await fetch(SCRIPT_URL+"?t="+Date.now());
+    const data=await res.json();
+    notas=(data.values||[]).slice(1).map(r=>({
+      id:r[0]||"",tipo:r[1]||"remate",fecha:r[2]||"",fecharemate:r[3]||"",
+      cliente:r[4]||"",direccion:r[5]||"",visita:r[6]||"1",
+      montador:r[7]||"",apoyo:r[8]||"",medidor:r[9]||"",disenadora:r[10]||"",
+      materiales:r[11]||"",fabrica:r[12]||"",materialfabrica:r[13]||"",
+      observaciones:r[14]||"",
+      fotos:r[15]?(()=>{try{return JSON.parse(r[15]);}catch{return[];}})():[],
+      drive:r[16]||"",creado:r[17]||""
+    }));
+    localStorage.setItem("l3_notas_cache",JSON.stringify(notas));
+
+    // Sincronizar config del equipo desde Sheets
+    if(data.config&&Object.keys(data.config).length>0){
+      if(data.config.montadores)config.montadores=data.config.montadores;
+      if(data.config.apoyos)config.apoyos=data.config.apoyos;
+      if(data.config.medidores)config.medidores=data.config.medidores;
+      if(data.config.disenadoras)config.disenadoras=data.config.disenadoras;
+      saveConfig();
+    }
+
+    const now=new Date();
+    document.getElementById("sync-time").textContent=`Actualizado a las ${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`;
+    renderList();renderStats();
+  }catch(e){
+    document.getElementById("error-box").style.display="block";
+    document.getElementById("error-box").textContent="⚠️ No se pudo conectar. Mostrando datos guardados.";
+    document.getElementById("sync-time").textContent="Sin conexión";
+  }
 }
 
-async function saveConfigToServer(cfg) {
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify({ action: "saveConfig", config: cfg }),
-  });
-  const data = await res.json();
-  if (!data.ok) throw new Error(data.error || "Error al guardar el equipo");
-  return data;
+// ── FILTERS ────────────────────────────────────────────────────────────────
+function renderFilterBar(){
+  const items=[["all","Todas"],...Object.entries(TIPOS).map(([k,v])=>[k,v.label])];
+  document.getElementById("filter-bar").innerHTML=items.map(([k,l])=>
+    `<button class="filter-btn ${currentFilter===k?"active":""}" onclick="setFilter('${k}')">${l}</button>`
+  ).join("");
+}
+function setFilter(f){currentFilter=f;renderFilterBar();renderList();}
+
+function renderList(){
+  const q=(document.getElementById("search")?.value||"").toLowerCase();
+  const filtered=notas.filter(n=>(currentFilter==="all"||n.tipo===currentFilter)&&
+    (n.cliente.toLowerCase().includes(q)||n.direccion.toLowerCase().includes(q)));
+  const el=document.getElementById("lista");
+  if(!filtered.length){
+    el.innerHTML='<div class="empty"><div style="font-size:48px;margin-bottom:12px">📋</div><div style="font-size:16px;font-weight:600;color:#94a3b8">No hay notas todavía</div></div>';
+    return;
+  }
+  el.innerHTML=filtered.map(n=>{
+    const t=TIPOS[n.tipo]||TIPOS.remate;
+    return `<div class="nota-card" style="border-left:4px solid ${t.color}" onclick="showDetail('${n.id}')">
+      <div style="flex:1">
+        <div style="margin-bottom:4px">
+          <span class="badge" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}55">${t.label}</span>
+          ${n.fotos?.length?`<span style="font-size:12px;color:#94a3b8;margin-left:6px">📷 ${n.fotos.length}</span>`:""}
+          ${n.drive?`<span style="font-size:12px;color:#16a34a;margin-left:4px">📁</span>`:""}
+        </div>
+        <div style="color:#f1f5f9;font-weight:700;font-size:16px">${n.cliente||"Sin nombre"}</div>
+        <div style="color:#94a3b8;font-size:13px;margin-top:2px">${n.direccion}</div>
+        ${(n.montador||n.apoyo)?`<div style="color:#64748b;font-size:12px;margin-top:4px">👷 ${[n.montador,n.apoyo].filter(Boolean).join(" + ")}</div>`:""}
+      </div>
+      <div style="text-align:right;color:#64748b;font-size:12px;flex-shrink:0;margin-left:10px">
+        <div>${fmtFecha(n.fecha)}</div><div>V.${n.visita}</div>
+        <div style="margin-top:6px;font-size:18px;color:#475569">›</div>
+      </div>
+    </div>`;
+  }).join("");
 }
 
-// Sube a Drive las fotos que aún no tengan url (solo tienen "data" en base64)
-async function uploadFotos(nota) {
-  const pendientes = (nota.fotos || []).filter(f => f.data && !f.url);
-  if (pendientes.length === 0) return nota.fotos || [];
-  const yaSubidas = (nota.fotos || []).filter(f => f.url);
-
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "uploadFotos",
-      notaId: nota.id,
-      cliente: nota.cliente,
-      fecha: nota.fecha,
-      fotos: pendientes.map(f => ({ name: f.name, data: f.data })),
-    }),
-  });
-  const data = await res.json();
-  if (!data.ok) throw new Error(data.error || "Error al subir las fotos");
-  return [...yaSubidas, ...data.urls];
+function renderStats(){
+  document.getElementById("stats").innerHTML=Object.entries(TIPOS).map(([k,v])=>
+    `<div class="stat-box" style="border:1px solid ${v.color}33">
+      <div style="font-size:22px;font-weight:800;color:${v.color}">${notas.filter(n=>n.tipo===k).length}</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">${v.label.split(" ").slice(1).join(" ")}</div>
+    </div>`
+  ).join("");
 }
 
-// ─── Config: fuente de verdad = Sheet "Config", con caché local para modo offline ──
-function useServerConfig() {
-  const [cfg, setCfgState] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("l3_config_cache")) ?? INITIAL_CONFIG; }
-    catch { return INITIAL_CONFIG; }
-  });
-
-  const hydrate = (serverCfg) => {
-    setCfgState(serverCfg);
-    localStorage.setItem("l3_config_cache", JSON.stringify(serverCfg));
-  };
-
-  const update = (updater) => {
-    setCfgState(prev => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
-      localStorage.setItem("l3_config_cache", JSON.stringify(next));
-      saveConfigToServer(next).catch(() => {});
-      return next;
-    });
-  };
-
-  return [cfg, update, hydrate];
+// ── DETAIL ─────────────────────────────────────────────────────────────────
+function showDetail(id){
+  const n=notas.find(x=>String(x.id)===String(id));
+  if(!n)return;
+  currentNota=n;
+  window._currentNotaId=String(id);
+  const t=TIPOS[n.tipo]||TIPOS.remate;
+  const fabricas=(n.fabrica||"").split(",").filter(Boolean);
+  document.getElementById("detail-content").innerHTML=`
+    <button class="btn-sec" onclick="showView('list')" style="margin-bottom:16px">← Volver</button>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+      <div>
+        <span class="badge" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}55">${t.label}</span>
+        <h2 style="margin:8px 0 4px;font-size:20px;color:#0f172a">${n.cliente||"Sin nombre"}</h2>
+        <p style="color:#64748b;font-size:14px">${n.direccion}</p>
+      </div>
+      <div style="text-align:right;color:#94a3b8;font-size:13px">
+        <div>${fmtFecha(n.fecha)}</div>
+        ${n.fecharemate?`<div>Remate: ${fmtFecha(n.fecharemate)}</div>`:""}
+        <div>Visita #${n.visita}</div>
+      </div>
+    </div>
+    <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:16px">
+      ${[["Montador",n.montador],["Apoyo de montaje",n.apoyo],["Medidor",n.medidor],["P.M.",n.disenadora]]
+        .filter(([,v])=>v).map(([l,v])=>`<div class="detail-row"><span style="color:#64748b">${l}</span><span style="font-weight:600;color:#1e293b">${v}</span></div>`).join("")}
+    </div>
+    ${n.drive?`<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:#15803d">📁 PDF se guardará en Drive del cliente</div>`:`<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:#92400e">⚠️ Sin carpeta Drive — solo se descarga</div>`}
+    ${n.materiales?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">📦 Material Almacén</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materiales}</p>`:""}
+    ${fabricas.length?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">🏭 Fábrica: ${fabricas.join(" · ")}</p>`:""}
+    ${n.materialfabrica?`<p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.materialfabrica}</p>`:""}
+    ${n.observaciones?`<p style="font-weight:700;font-size:13px;color:#475569;text-transform:uppercase;margin-bottom:6px">📝 Observaciones</p><p style="font-size:14px;color:#334155;line-height:1.6;white-space:pre-wrap;margin-bottom:14px">${n.observaciones}</p>`:""}
+    ${n.fotos?.length?`<p style="font-weight:700;font-size:13px;color:#475569;margin-bottom:8px">📷 Fotos (${n.fotos.length})</p><div class="foto-grid">${n.fotos.map(f=>`<img src="${f.data}" alt="">`).join("")}</div>`:""}
+    <button class="btn-edit" onclick="startEdit('${n.id}')">✏️ Editar nota</button>
+    <button class="btn-pdf" id="btn-exportpdf" data-id="${n.id}" onclick="var btn=this;var nid=btn.getAttribute('data-id');var nota=notas.find(x=>String(x.id)===String(nid));if(!nota){btn.textContent='❌ Nota no encontrada';return;}exportPDF(nid);">📄 Exportar PDF Completo</button>
+    <div id="drive-status"></div>
+    ${userRole==="admin"?`<button class="btn-danger" onclick="deleteNota('${n.id}')">🗑 Eliminar nota</button>`:""}
+  `;
+  showView("detail");
 }
 
-function today() { return new Date().toISOString().slice(0, 10); }
+// ── EDIT ───────────────────────────────────────────────────────────────────
+function startEdit(id){
+  const n=notas.find(x=>String(x.id)===String(id));
+  if(!n)return;
+  editingId=String(id);
+  document.getElementById("view-list").style.display="none";
+  document.getElementById("view-detail").style.display="none";
+  document.getElementById("view-config").style.display="none";
+  document.getElementById("view-new").style.display="block";
+  renderForm(n);
+}
 
-function emptyNota(tipo) {
+// ── FORM ───────────────────────────────────────────────────────────────────
+function renderForm(n){
+  const isEdit=!!n;
+  currentFotos=isEdit?(n.fotos||[]):[];
+  currentTipo=isEdit?n.tipo:"remate";
+  document.getElementById("form-content").innerHTML=`
+    <h3 style="font-size:16px;color:#0f172a;margin-bottom:16px">${isEdit?"✏️ Editar nota":"➕ Nueva nota"}</h3>
+    <div class="tipo-selector" id="tipo-selector"></div>
+    <div class="row2">
+      <div><label>📅 Fecha instalación</label><input type="date" id="f-fecha" value="${isEdit?n.fecha:""}"></div>
+      <div><label>📅 Fecha Remate</label><input type="date" id="f-fecharemate" value="${isEdit?n.fecharemate:""}"></div>
+    </div>
+    <div style="margin-bottom:12px"><label>🔢 Nº Visita</label><input type="number" min="1" id="f-visita" value="${isEdit?n.visita:"1"}" style="max-width:120px"></div>
+    <label>👤 CLIENTE / PROYECTO</label>
+    <input type="text" id="f-cliente" value="${isEdit?n.cliente:""}" placeholder="Nombre del cliente…" style="text-transform:uppercase">
+    <label>📍 DIRECCIÓN</label>
+    <input type="text" id="f-direccion" value="${isEdit?n.direccion:""}" placeholder="Calle, número, piso…" style="text-transform:uppercase">
+    <div class="drive-box">
+      <label>📁 Enlace carpeta Drive del cliente</label>
+      <input type="url" id="f-drive" value="${isEdit?n.drive:""}" placeholder="https://drive.google.com/drive/folders/...">
+      <div style="font-size:12px;color:#16a34a;margin-top:2px">Opcional — si se añade, el PDF se guardará automáticamente</div>
+    </div>
+    <div class="divider"></div>
+    <p class="team-section">👷 Equipo</p>
+    <div id="selects-equipo"></div>
+    <div class="divider"></div>
+    <label>📦 MATERIAL DE ALMACÉN Y MATERIALES A PEDIR</label>
+    <textarea id="f-materiales" rows="4" style="text-transform:uppercase" placeholder="Material de almacén…">${isEdit?n.materiales:""}</textarea>
+    <label>🏭 MATERIAL PEDIR A FÁBRICA</label>
+    <div class="fabrica-checks">
+      ${["trae","rekker","inko","fiona","otro"].map(f=>`
+        <label><input type="checkbox" id="fab-${f}" ${isEdit&&(n.fabrica||"").toLowerCase().includes(f)?"checked":""}> ${f.charAt(0).toUpperCase()+f.slice(1)}</label>
+      `).join("")}
+    </div>
+    <textarea id="f-materialfabrica" rows="2" style="text-transform:uppercase" placeholder="Detalla el material…">${isEdit?n.materialfabrica:""}</textarea>
+    <label>📝 OBSERVACIONES</label>
+    <textarea id="f-observaciones" rows="3" style="text-transform:uppercase" placeholder="Trabajo pendiente…">${isEdit?n.observaciones:""}</textarea>
+    <label>📷 Fotos</label>
+    <div class="foto-opciones">
+      <button onclick="document.getElementById('foto-camara').click()">📷 Cámara</button>
+      <button onclick="document.getElementById('foto-galeria').click()">🖼 Galería</button>
+    </div>
+    <input type="file" id="foto-camara" accept="image/*" capture="environment" multiple style="display:none" onchange="handleFotos(this)">
+    <input type="file" id="foto-galeria" accept="image/*" multiple style="display:none" onchange="handleFotos(this)">
+    <div class="foto-thumbs" id="foto-thumbs"></div>
+    <button class="btn-primary" onclick="${isEdit?"updateNota()":"saveNota()"}" id="btn-save">${isEdit?"💾 Guardar cambios":"💾 Guardar Nota"}</button>
+    <button class="btn-sec" style="margin-top:10px;width:100%" onclick="${isEdit?"showDetail('"+n?.id+"')":"showView('list')"}">Cancelar</button>
+  `;
+
+  // Tipo selector
+  document.getElementById("tipo-selector").innerHTML=Object.entries(TIPOS).map(([k,v])=>
+    `<button class="tipo-btn" id="tipo-btn-${k}" style="border-color:${currentTipo===k?v.color:"#e2e8f0"};background:${currentTipo===k?v.color+"18":"#fff"};color:${currentTipo===k?v.color:"#64748b"}" onclick="setTipo('${k}')">${v.label}</button>`
+  ).join("");
+
+  // Selects equipo
+  document.getElementById("selects-equipo").innerHTML=[
+    ["Montador principal","montador","montadores"],
+    ["Apoyo de montaje","apoyo","apoyos"],
+    ["Medidor","medidor","medidores"],
+    ["Diseñadora / P.M.","disenadora","disenadoras"]
+  ].map(([label,id,key])=>`
+    <label>${label}</label>
+    <div class="select-row">
+      <select id="f-${id}">
+        <option value="">— seleccionar —</option>
+        ${(config[key]||[]).map(o=>`<option value="${o}" ${isEdit&&n[id]===o?"selected":""}>${o}</option>`).join("")}
+      </select>
+    </div>
+  `).join("");
+
+  if(isEdit)renderFotoThumbs();
+
+  // set fecha today if new
+  if(!isEdit)document.getElementById("f-fecha").value=new Date().toISOString().slice(0,10);
+}
+
+function setTipo(t){
+  currentTipo=t;
+  Object.entries(TIPOS).forEach(([k,v])=>{
+    const btn=document.getElementById("tipo-btn-"+k);
+    if(btn){btn.style.borderColor=k===t?v.color:"#e2e8f0";btn.style.background=k===t?v.color+"18":"#fff";btn.style.color=k===t?v.color:"#64748b";}
+  });
+}
+
+function getFormData(){
+  const fabricaSel=["trae","rekker","inko","fiona","otro"]
+    .filter(f=>document.getElementById("fab-"+f)?.checked)
+    .map(f=>f.charAt(0).toUpperCase()+f.slice(1));
   return {
-    id: Date.now(), tipo, fecha: today(),
-    cliente: "", direccion: "", visita: "1",
-    montador: "", ayudante: "", medidor: "", disenadora: "",
-    materiales: "", observaciones: "", fotos: [],
-    creado: new Date().toISOString(),
+    tipo:currentTipo,
+    fecha:document.getElementById("f-fecha").value,
+    fecharemate:document.getElementById("f-fecharemate").value,
+    cliente:document.getElementById("f-cliente").value.trim().toUpperCase(),
+    direccion:document.getElementById("f-direccion").value.toUpperCase(),
+    visita:document.getElementById("f-visita").value,
+    montador:document.getElementById("f-montador")?.value||"",
+    apoyo:document.getElementById("f-apoyo")?.value||"",
+    medidor:document.getElementById("f-medidor")?.value||"",
+    disenadora:document.getElementById("f-disenadora")?.value||"",
+    materiales:document.getElementById("f-materiales").value.toUpperCase(),
+    fabrica:fabricaSel.join(","),
+    materialfabrica:document.getElementById("f-materialfabrica").value.toUpperCase(),
+    observaciones:document.getElementById("f-observaciones").value.toUpperCase(),
+    drive:document.getElementById("f-drive").value.trim(),
+    fotos:currentFotos,
   };
 }
 
-// ─── Components ───────────────────────────────────────────────────────────────
-function Badge({ tipo }) {
-  const t = TIPO_NOTA[tipo];
-  return (
-    <span style={{
-      background: t.color+"22", color: t.color,
-      border: `1px solid ${t.color}55`, borderRadius: 6,
-      padding: "2px 10px", fontSize: 12, fontWeight: 700
-    }}>{t.label}</span>
-  );
+async function saveNota(){
+  const fd=getFormData();
+  if(!fd.cliente){alert("Por favor indica el nombre del cliente.");return;}
+  const btn=document.getElementById("btn-save");
+  btn.textContent="⏳ Guardando…";btn.disabled=true;
+  const nota={id:Date.now(),...fd,creado:new Date().toISOString()};
+  const row=HEADERS.map(h=>h==="fotos"?JSON.stringify(nota[h]):String(nota[h]||""));
+  try{
+    await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"append",row})});
+    notas.unshift(nota);renderList();renderStats();showView("list");
+  }catch(e){alert("Error al guardar.");}
+  btn.textContent="💾 Guardar Nota";btn.disabled=false;
 }
 
-function SelectField({ label, value, onChange, options, onAddNew }) {
-  const [adding, setAdding] = useState(false);
-  const [nv, setNv] = useState("");
-  return (
-    <div style={{ marginBottom: 12 }}>
-      <label style={S.label}>{label}</label>
-      <div style={{ display: "flex", gap: 6 }}>
-        <select value={value} onChange={e => onChange(e.target.value)} style={S.input}>
-          <option value="">— seleccionar —</option>
-          {options.map(o => <option key={o} value={o}>{o}</option>)}
-        </select>
-        <button onClick={() => setAdding(true)} style={S.btnSm}>＋</button>
-      </div>
-      {adding && (
-        <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
-          <input placeholder="Nombre…" value={nv} onChange={e => setNv(e.target.value)}
-            style={{ ...S.input, flex: 1 }} />
-          <button style={S.btnSm} onClick={() => {
-            if (nv.trim()) { onAddNew(nv.trim()); onChange(nv.trim()); }
-            setNv(""); setAdding(false);
-          }}>✓</button>
-          <button style={{ ...S.btnSm, background: "#fee2e2", color: "#dc2626" }}
-            onClick={() => setAdding(false)}>✕</button>
-        </div>
-      )}
-    </div>
-  );
+async function updateNota(){
+  const fd=getFormData();
+  if(!fd.cliente){alert("Por favor indica el nombre del cliente.");return;}
+  const btn=document.getElementById("btn-save");
+  btn.textContent="⏳ Guardando…";btn.disabled=true;
+  const original=notas.find(x=>String(x.id)===String(editingId));
+  const nota={...original,...fd};
+  // Delete old + append new
+  try{
+    await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"delete",id:String(editingId)})});
+    const row=HEADERS.map(h=>h==="fotos"?JSON.stringify(nota[h]):String(nota[h]||""));
+    await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"append",row})});
+    const idx=notas.findIndex(x=>String(x.id)===String(editingId));
+    if(idx>=0)notas[idx]=nota;
+    renderList();renderStats();
+    editingId=null;
+    showDetail(nota.id);
+  }catch(e){alert("Error al actualizar.");}
+  btn.textContent="💾 Guardar cambios";btn.disabled=false;
 }
 
-function FotoUpload({ fotos, onChange }) {
-  const ref = useRef();
-  const handleFiles = e => {
-    Array.from(e.target.files).forEach(f => {
-      const r = new FileReader();
-      r.onload = ev => onChange([...fotos, { name: f.name, data: ev.target.result }]);
-      r.readAsDataURL(f);
-    });
-  };
-  return (
-    <div style={{ marginBottom: 16 }}>
-      <label style={S.label}>📷 Fotos</label>
-      <div onClick={() => ref.current.click()} style={{
-        border: "2px dashed #cbd5e1", borderRadius: 10, padding: "18px 12px",
-        textAlign: "center", cursor: "pointer", background: "#f8fafc", color: "#64748b", fontSize: 14
-      }}>Toca para añadir fotos</div>
-      <input ref={ref} type="file" accept="image/*" multiple capture="environment"
-        style={{ display: "none" }} onChange={handleFiles} />
-      {fotos.length > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
-          {fotos.map((f, i) => (
-            <div key={i} style={{ position: "relative" }}>
-              <img src={f.url || f.data} alt={f.name}
-                style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 8, border: "1px solid #e2e8f0" }} />
-              <button onClick={() => onChange(fotos.filter((_, j) => j !== i))} style={{
-                position: "absolute", top: -6, right: -6, background: "#dc2626", color: "#fff",
-                border: "none", borderRadius: "50%", width: 20, height: 20, fontSize: 12, cursor: "pointer"
-              }}>✕</button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+async function deleteNota(id){
+  if(!confirm("¿Eliminar esta nota?"))return;
+  await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"delete",id:String(id)})});
+  notas=notas.filter(n=>String(n.id)!==String(id));
+  renderList();renderStats();showView("list");
 }
 
-function NotaForm({ config, onConfig, onSave, onCancel }) {
-  const [nota, setNota] = useState(emptyNota("montaje"));
-  const [saving, setSaving] = useState(false);
-  const set = (k, v) => setNota(n => ({ ...n, [k]: v }));
-  const addCfg = (field, val) => onConfig(c => ({ ...c, [field]: [...c[field], val] }));
-
-  const handleSave = async () => {
-    if (!nota.cliente.trim()) { alert("Por favor indica el nombre del cliente."); return; }
-    setSaving(true);
-    try {
-      await onSave(nota);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <div style={S.card}>
-      <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-        {Object.entries(TIPO_NOTA).map(([k, v]) => (
-          <button key={k} onClick={() => set("tipo", k)} style={{
-            padding: "8px 14px", borderRadius: 8, border: "2px solid",
-            borderColor: nota.tipo === k ? v.color : "#e2e8f0",
-            background: nota.tipo === k ? v.color+"18" : "#fff",
-            color: nota.tipo === k ? v.color : "#64748b",
-            fontWeight: 700, fontSize: 13, cursor: "pointer"
-          }}>{v.label}</button>
-        ))}
-      </div>
-
-      <div style={S.row2}>
-        <div>
-          <label style={S.label}>📅 Fecha</label>
-          <input type="date" value={nota.fecha} onChange={e => set("fecha", e.target.value)} style={S.input} />
-        </div>
-        <div>
-          <label style={S.label}>🔢 Nº Visita</label>
-          <input type="number" min="1" value={nota.visita} onChange={e => set("visita", e.target.value)} style={S.input} />
-        </div>
-      </div>
-
-      <label style={S.label}>👤 Cliente / Proyecto</label>
-      <input placeholder="Nombre del cliente…" value={nota.cliente}
-        onChange={e => set("cliente", e.target.value)} style={{ ...S.input, marginBottom: 12 }} />
-
-      <label style={S.label}>📍 Dirección</label>
-      <input placeholder="Calle, número, piso…" value={nota.direccion}
-        onChange={e => set("direccion", e.target.value)} style={{ ...S.input, marginBottom: 12 }} />
-
-      <div style={{ height: 1, background: "#e2e8f0", margin: "16px 0" }} />
-      <p style={{ fontWeight: 700, fontSize: 13, color: "#475569", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: 1 }}>👷 Equipo</p>
-
-      <SelectField label="Montador principal" value={nota.montador} onChange={v => set("montador", v)}
-        options={config.montadores} onAddNew={v => addCfg("montadores", v)} />
-      <SelectField label="Ayudante" value={nota.ayudante} onChange={v => set("ayudante", v)}
-        options={config.ayudantes} onAddNew={v => addCfg("ayudantes", v)} />
-      <SelectField label="Medidor" value={nota.medidor} onChange={v => set("medidor", v)}
-        options={config.medidores} onAddNew={v => addCfg("medidores", v)} />
-      <SelectField label="Diseñadora / P.M." value={nota.disenadora} onChange={v => set("disenadora", v)}
-        options={config.disenadoras} onAddNew={v => addCfg("disenadoras", v)} />
-
-      <div style={{ height: 1, background: "#e2e8f0", margin: "16px 0" }} />
-
-      <label style={S.label}>{nota.tipo === "postventa" ? "🛠 Descripción del fallo" : "📦 Material"}</label>
-      <textarea placeholder="Describe los materiales o el problema…" value={nota.materiales}
-        onChange={e => set("materiales", e.target.value)} rows={4}
-        style={{ ...S.input, resize: "vertical", marginBottom: 12 }} />
-
-      <label style={S.label}>📝 Observaciones</label>
-      <textarea placeholder="Trabajo pendiente, notas del cliente…" value={nota.observaciones}
-        onChange={e => set("observaciones", e.target.value)} rows={3}
-        style={{ ...S.input, resize: "vertical", marginBottom: 12 }} />
-
-      <FotoUpload fotos={nota.fotos} onChange={v => set("fotos", v)} />
-
-      <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
-        <button onClick={handleSave} disabled={saving} style={{ ...S.btnPrimary, opacity: saving ? 0.7 : 1 }}>
-          {saving ? "⏳ Guardando…" : "💾 Guardar Nota"}
-        </button>
-        <button onClick={onCancel} style={S.btnSec}>Cancelar</button>
-      </div>
-    </div>
-  );
+function handleFotos(input){
+  Array.from(input.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=ev=>{currentFotos.push({name:f.name,data:ev.target.result});renderFotoThumbs();};
+    r.readAsDataURL(f);
+  });
+  input.value="";
 }
-
-function NotaDetail({ nota, onBack, onDelete, deleting }) {
-  return (
-    <div style={S.card}>
-      <button onClick={onBack} style={{ ...S.btnSec, marginBottom: 16 }}>← Volver</button>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-        <div>
-          <Badge tipo={nota.tipo} />
-          <h2 style={{ margin: "8px 0 4px", fontSize: 20, color: "#0f172a" }}>{nota.cliente || "Sin nombre"}</h2>
-          <p style={{ margin: 0, color: "#64748b", fontSize: 14 }}>{nota.direccion}</p>
-        </div>
-        <div style={{ textAlign: "right", color: "#94a3b8", fontSize: 13 }}>
-          <div>{nota.fecha}</div><div>Visita #{nota.visita}</div>
-        </div>
-      </div>
-
-      <div style={{ background: "#f8fafc", borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
-        {[["Montador", nota.montador], ["Ayudante", nota.ayudante],
-          ["Medidor", nota.medidor], ["Diseñadora", nota.disenadora]].map(([l, v]) =>
-          v ? (
-            <div key={l} style={{ display: "flex", justifyContent: "space-between",
-              padding: "4px 0", borderBottom: "1px solid #e2e8f0", fontSize: 14 }}>
-              <span style={{ color: "#64748b" }}>{l}</span>
-              <span style={{ fontWeight: 600, color: "#1e293b" }}>{v}</span>
-            </div>
-          ) : null
-        )}
-      </div>
-
-      {nota.materiales && (
-        <div style={{ marginBottom: 14 }}>
-          <p style={{ fontWeight: 700, fontSize: 13, color: "#475569", margin: "0 0 6px", textTransform: "uppercase" }}>
-            {nota.tipo === "postventa" ? "Defecto/Fallo" : "Material"}
-          </p>
-          <p style={{ margin: 0, fontSize: 14, color: "#334155", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{nota.materiales}</p>
-        </div>
-      )}
-      {nota.observaciones && (
-        <div style={{ marginBottom: 14 }}>
-          <p style={{ fontWeight: 700, fontSize: 13, color: "#475569", margin: "0 0 6px", textTransform: "uppercase" }}>Observaciones</p>
-          <p style={{ margin: 0, fontSize: 14, color: "#334155", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{nota.observaciones}</p>
-        </div>
-      )}
-
-      {nota.fotos?.length > 0 && (
-        <div style={{ marginTop: 16 }}>
-          <p style={{ fontWeight: 700, fontSize: 13, color: "#475569", marginBottom: 8 }}>📷 Fotos ({nota.fotos.length})</p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {nota.fotos.map((f, i) => (
-              <img key={i} src={f.url || f.data} alt={f.name}
-                style={{ width: "calc(50% - 4px)", borderRadius: 10, objectFit: "cover", aspectRatio: "1", border: "1px solid #e2e8f0" }} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <button onClick={() => { if (confirm("¿Eliminar esta nota?")) onDelete(nota.id); }}
-        disabled={deleting}
-        style={{ ...S.btnDanger, marginTop: 24, opacity: deleting ? 0.6 : 1 }}>
-        {deleting ? "⏳ Eliminando…" : "🗑 Eliminar nota"}
-      </button>
-    </div>
-  );
+function renderFotoThumbs(){
+  const el=document.getElementById("foto-thumbs");
+  if(el)el.innerHTML=currentFotos.map((f,i)=>
+    `<div class="foto-thumb"><img src="${f.data}"><button onclick="removeFoto(${i})">✕</button></div>`
+  ).join("");
 }
+function removeFoto(i){currentFotos.splice(i,1);renderFotoThumbs();}
 
-function ConfigPanel({ config, onConfig, onClose }) {
-  const fields = [
-    { key: "montadores", label: "👷 Montadores" },
-    { key: "ayudantes",  label: "🙋 Ayudantes" },
-    { key: "medidores",  label: "📐 Medidores" },
-    { key: "disenadoras",label: "🎨 Diseñadoras/PM" },
+function renderConfig(){
+  const fields=[
+    {key:"montadores",label:"👷 Montadores"},
+    {key:"apoyos",label:"🤝 Apoyo de montaje"},
+    {key:"medidores",label:"📐 Medidores"},
+    {key:"disenadoras",label:"🎨 Diseñadoras/PM"},
   ];
-  const [nv, setNv] = useState({});
-  const remove = (f, v) => onConfig(c => ({ ...c, [f]: c[f].filter(x => x !== v) }));
-  const add = f => {
-    const v = (nv[f] || "").trim();
-    if (v && !config[f].includes(v)) onConfig(c => ({ ...c, [f]: [...c[f], v] }));
-    setNv(n => ({ ...n, [f]: "" }));
-  };
-  return (
-    <div style={S.card}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <h2 style={{ margin: 0, fontSize: 18, color: "#0f172a" }}>⚙️ Equipo</h2>
-        <button onClick={onClose} style={S.btnSec}>✕ Cerrar</button>
-      </div>
-      {fields.map(({ key, label }) => (
-        <div key={key} style={{ marginBottom: 20 }}>
-          <p style={{ fontWeight: 700, fontSize: 14, margin: "0 0 8px", color: "#334155" }}>{label}</p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-            {config[key].map(name => (
-              <span key={name} style={{ background: "#f1f5f9", borderRadius: 20, padding: "4px 10px",
-                fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
-                {name}
-                <span onClick={() => remove(key, name)} style={{ cursor: "pointer", color: "#dc2626", fontSize: 14 }}>✕</span>
-              </span>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: 6 }}>
-            <input placeholder="Añadir…" value={nv[key] || ""}
-              onChange={e => setNv(n => ({ ...n, [key]: e.target.value }))}
-              onKeyDown={e => e.key === "Enter" && add(key)}
-              style={{ ...S.input, flex: 1 }} />
-            <button style={S.btnSm} onClick={() => add(key)}>＋</button>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ─── APP ──────────────────────────────────────────────────────────────────────
-function App() {
-  const [notas, setNotas]     = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
-  const [config, setConfig, hydrateConfig] = useServerConfig();
-  const [view, setView]       = useState("list");
-  const [selected, setSel]    = useState(null);
-  const [filter, setFilter]   = useState("all");
-  const [search, setSearch]   = useState("");
-  const [deleting, setDel]    = useState(false);
-
-  const load = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { notas, config: serverCfg } = await fetchData();
-      setNotas(notas);
-      if (serverCfg && Object.keys(serverCfg).some(k => (serverCfg[k] || []).length)) {
-        hydrateConfig(serverCfg);
-      }
-    } catch (e) {
-      setError("No se pudo conectar. Comprueba que el script está publicado correctamente.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { load(); }, []);
-
-  const saveNota = async (nota) => {
-    try {
-      let notaToSave = { ...nota };
-      if (notaToSave.fotos?.some(f => f.data && !f.url)) {
-        notaToSave.fotos = await uploadFotos(notaToSave);
-      }
-      await appendNota(notaToSave);
-      setNotas(n => [notaToSave, ...n]);
-      setView("list");
-    } catch (err) {
-      alert("No se pudo guardar la nota. Comprueba tu conexión e inténtalo de nuevo.\n\n" + err.message);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    setDel(true);
-    try {
-      await deleteNota(id);
-      setNotas(n => n.filter(x => String(x.id) !== String(id)));
-      setView("list");
-    } catch (err) {
-      alert("No se pudo eliminar la nota. Comprueba tu conexión e inténtalo de nuevo.\n\n" + err.message);
-    } finally {
-      setDel(false);
-    }
-  };
-
-  const filtered = notas.filter(n =>
-    (filter === "all" || n.tipo === filter) &&
-    (n.cliente.toLowerCase().includes(search.toLowerCase()) ||
-     n.direccion.toLowerCase().includes(search.toLowerCase()))
-  );
-
-  return (
-    <div style={{
-      minHeight: "100vh",
-      background: "linear-gradient(160deg,#0f172a 0%,#1e3a5f 50%,#0f172a 100%)",
-      fontFamily: "'Segoe UI',system-ui,sans-serif",
-      paddingBottom: 80
-    }}>
-      {/* HEADER */}
-      <div style={{
-        background: "rgba(255,255,255,0.04)", backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(255,255,255,0.1)",
-        padding: "16px 16px 12px", position: "sticky", top: 0, zIndex: 10
-      }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <svg width="110" height="38" viewBox="0 0 110 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <text x="0" y="20" fontFamily="Georgia,serif" fontSize="15" fontWeight="300" fill="white" letterSpacing="1">línea</text>
-            <text x="0" y="34" fontFamily="Georgia,serif" fontSize="11" fontWeight="300" fill="white" letterSpacing="1.5">cocinas</text>
-            <rect x="60" y="2" width="48" height="34" rx="8" ry="8" fill="white"/>
-            <text x="68" y="26" fontFamily="Georgia,serif" fontSize="22" fontWeight="400" fill="black">3</text>
-            <line x1="88" y1="13" x2="104" y2="13" stroke="black" strokeWidth="2.5" strokeLinecap="round"/>
-            <line x1="88" y1="20" x2="104" y2="20" stroke="black" strokeWidth="2.5" strokeLinecap="round"/>
-            <line x1="88" y1="27" x2="104" y2="27" stroke="black" strokeWidth="2.5" strokeLinecap="round"/>
-          </svg>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <button onClick={load} style={S.btnIcon} title="Actualizar">🔄</button>
-            <button onClick={() => setView("config")} style={S.btnIcon}>⚙️</button>
-            <button onClick={() => setView("new")} style={{
-              background: "linear-gradient(135deg,#2563eb,#0ea5e9)",
-              color: "#fff", border: "none", borderRadius: 10,
-              padding: "8px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer",
-              boxShadow: "0 4px 14px rgba(37,99,235,0.4)"
-            }}>＋ Nueva</button>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ padding: 16, maxWidth: 600, margin: "0 auto" }}>
-        {view === "config" && (
-          <ConfigPanel config={config} onConfig={setConfig} onClose={() => setView("list")} />
-        )}
-        {view === "new" && (
-          <NotaForm config={config} onConfig={setConfig} onSave={saveNota} onCancel={() => setView("list")} />
-        )}
-        {view === "detail" && selected && (
-          <NotaDetail nota={selected} onBack={() => setView("list")} onDelete={handleDelete} deleting={deleting} />
-        )}
-
-        {view === "list" && (
-          <>
-            {error && (
-              <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10,
-                padding: "12px 16px", marginBottom: 16, color: "#dc2626", fontSize: 14 }}>
-                ⚠️ {error}
-              </div>
-            )}
-
-            <input placeholder="🔍 Buscar cliente o dirección…" value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{ ...S.input, background: "rgba(255,255,255,0.08)", color: "#fff",
-                border: "1px solid rgba(255,255,255,0.15)", marginBottom: 12 }} />
-
-            <div style={{ display: "flex", gap: 6, marginBottom: 16, overflowX: "auto", paddingBottom: 4 }}>
-              {[["all", "Todas"], ...Object.entries(TIPO_NOTA).map(([k, v]) => [k, v.label])].map(([k, label]) => (
-                <button key={k} onClick={() => setFilter(k)} style={{
-                  flexShrink: 0, padding: "6px 14px", borderRadius: 20, border: "1px solid",
-                  borderColor: filter === k ? "#2563eb" : "rgba(255,255,255,0.15)",
-                  background: filter === k ? "#2563eb" : "rgba(255,255,255,0.06)",
-                  color: filter === k ? "#fff" : "#94a3b8",
-                  fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap"
-                }}>{label}</button>
-              ))}
-            </div>
-
-            {loading ? (
-              <div style={{ textAlign: "center", padding: "60px 20px", color: "#94a3b8" }}>
-                <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
-                <div>Cargando notas…</div>
-              </div>
-            ) : filtered.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "60px 20px", color: "#475569" }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>📋</div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: "#94a3b8" }}>No hay notas todavía</div>
-                <div style={{ fontSize: 14, marginTop: 6 }}>Pulsa "＋ Nueva" para crear la primera</div>
-              </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {filtered.map(nota => {
-                  const t = TIPO_NOTA[nota.tipo];
-                  return (
-                    <div key={nota.id} onClick={() => { setSel(nota); setView("detail"); }}
-                      style={{
-                        background: "rgba(255,255,255,0.06)", backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderLeft: `4px solid ${t.color}`,
-                        borderRadius: 12, padding: "14px 16px", cursor: "pointer",
-                        display: "flex", justifyContent: "space-between", alignItems: "flex-start"
-                      }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                          <Badge tipo={nota.tipo} />
-                          {nota.fotos?.length > 0 && (
-                            <span style={{ fontSize: 12, color: "#94a3b8" }}>📷 {nota.fotos.length}</span>
-                          )}
-                        </div>
-                        <div style={{ color: "#f1f5f9", fontWeight: 700, fontSize: 16 }}>
-                          {nota.cliente || "Sin nombre"}
-                        </div>
-                        <div style={{ color: "#94a3b8", fontSize: 13, marginTop: 2 }}>{nota.direccion}</div>
-                        {(nota.montador || nota.ayudante) && (
-                          <div style={{ color: "#64748b", fontSize: 12, marginTop: 4 }}>
-                            👷 {[nota.montador, nota.ayudante].filter(Boolean).join(" + ")}
-                          </div>
-                        )}
-                      </div>
-                      <div style={{ textAlign: "right", color: "#64748b", fontSize: 12, flexShrink: 0, marginLeft: 10 }}>
-                        <div>{nota.fecha}</div>
-                        <div style={{ marginTop: 2 }}>V.{nota.visita}</div>
-                        <div style={{ marginTop: 6, color: "#475569", fontSize: 18 }}>›</div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {notas.length > 0 && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginTop: 20 }}>
-                {Object.entries(TIPO_NOTA).map(([k, v]) => (
-                  <div key={k} style={{
-                    background: "rgba(255,255,255,0.04)", borderRadius: 10,
-                    padding: "12px 8px", textAlign: "center", border: `1px solid ${v.color}33`
-                  }}>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: v.color }}>
-                      {notas.filter(n => n.tipo === k).length}
-                    </div>
-                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
-                      {v.label.split(" ").slice(1).join(" ")}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
+  document.getElementById("config-content").innerHTML=fields.map(({key,label})=>`
+    <div style="margin-bottom:20px">
+      <p style="font-weight:700;font-size:14px;margin:0 0 8px;color:#334155">${label}</p>
+      <div style="margin-bottom:8px">${(config[key]||[]).map(name=>`<span class="tag">${name}<span onclick="removeFromConfig('${key}','${name}')">✕</span></span>`).join("")}</div>
+      <div class="add-row">
+        <input id="new-${key}" placeholder="Añadir…" onkeydown="if(event.key==='Enter')addToConfig('${key}')">
+        <button class="btn-sm" onclick="addToConfig('${key}')">＋</button>
       </div>
     </div>
-  );
+  `).join("");
+}
+function addToConfig(key){
+  const input=document.getElementById("new-"+key);
+  const val=input.value.trim();
+  if(val&&!(config[key]||[]).includes(val)){if(!config[key])config[key]=[];config[key].push(val);saveConfig();renderConfig();}
+  input.value="";
+}
+function removeFromConfig(key,val){config[key]=(config[key]||[]).filter(x=>x!==val);saveConfig();renderConfig();}
+
+// ── LOGO PDF ───────────────────────────────────────────────────────────────
+const LOGO_HTML=`<table style="border:none;width:auto;margin:0"><tr>
+  <td style="border:none;padding:0;vertical-align:middle;padding-right:6px">
+    <div style="font-family:Georgia,serif;font-size:26px;font-weight:300;letter-spacing:2px;line-height:1.1">línea</div>
+    <div style="font-family:Georgia,serif;font-size:17px;font-weight:300;letter-spacing:4px;line-height:1.3">cocinas</div>
+  </td>
+  <td style="border:none;padding:0 6px;vertical-align:middle">
+    <div style="background:#000;border-radius:9px;width:52px;height:52px;position:relative;display:inline-block">
+      <span style="font-family:Georgia,serif;font-size:28px;color:#fff;position:absolute;left:7px;top:9px;line-height:1">3</span>
+      <div style="position:absolute;right:7px;top:13px">
+        <div style="width:14px;height:2px;background:#fff;margin-bottom:5px;border-radius:1px"></div>
+        <div style="width:14px;height:2px;background:#fff;margin-bottom:5px;border-radius:1px"></div>
+        <div style="width:14px;height:2px;background:#fff;border-radius:1px"></div>
+      </div>
+    </div>
+  </td>
+  <td style="border:none;padding:0;border-left:1.5px solid #000;vertical-align:middle;padding-left:10px">
+    <div style="font-family:Arial,sans-serif;font-size:15px;font-weight:300">Ideas que <strong style="font-weight:900">suman</strong></div>
+  </td>
+</tr></table>`;
+
+function generarHTMLPDF(n){
+  const tipoTitulo={remate:"NOTA DE REMATES",postventa:"NOTA DE POSTVENTA"}[n.tipo]||"NOTA";
+  const instaladores=[n.montador,n.apoyo].filter(Boolean).join(", ").toUpperCase();
+  const fabricas=(n.fabrica||"").split(",").filter(Boolean);
+  const paginaNota=`<div style="page-break-after:${n.fotos?.length?"always":"auto"}">
+<table style="width:100%;border-collapse:collapse;margin-bottom:8px;border:none"><tr>
+  <td style="border:none;padding:0;width:44%">${LOGO_HTML}</td>
+  <td style="border:none;padding:0;text-align:center;vertical-align:middle">
+    <div style="font-size:16px;font-weight:900;letter-spacing:2px;border-bottom:2px solid #000;padding-bottom:3px;margin-bottom:3px">${tipoTitulo}</div>
+    <div style="font-size:9.5px;color:#333;letter-spacing:1px;text-transform:uppercase">LÍNEA 3 DISEÑO Y DECORACIÓN DE COCINAS S.L.</div>
+  </td>
+  <td style="border:none;width:44%"></td>
+</tr></table>
+<table style="width:100%;border-collapse:collapse;margin-bottom:5px">
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">FECHA DE INSTALACIÓN</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px">${fmtFecha(n.fecha)}</td>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:70px;font-size:10.5px;text-transform:uppercase">Nº VISITA</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;width:45px;font-size:11.5px">${n.visita}ª</td>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:105px;font-size:10.5px;text-transform:uppercase">FECHA REMATE</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;width:85px;font-size:11.5px">${fmtFecha(n.fecharemate)}</td>
+  </tr>
+</table>
+<table style="width:100%;border-collapse:collapse;margin-bottom:5px">
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;width:1px;white-space:nowrap">
+      <span style="color:#cc0000;font-weight:900;font-size:12px;letter-spacing:2px;text-transform:uppercase">INSTALADORES</span>
+    </td>
+    <td style="border:1px solid #888;padding:4px 7px;font-size:11.5px;text-transform:uppercase">${instaladores}</td>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:70px;font-size:10.5px;text-transform:uppercase">MEDIDOR</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px;text-transform:uppercase">${(n.medidor||"").toUpperCase()}</td>
+  </tr>
+</table>
+<table style="width:100%;border-collapse:collapse;margin-bottom:5px">
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">CLIENTE/PRO</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px">${n.cliente}</td>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:40px;font-size:10.5px">P.M.</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;width:120px;font-size:11.5px;text-transform:uppercase">${(n.disenadora||"").toUpperCase()}</td>
+  </tr>
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;font-size:10.5px;text-transform:uppercase">DIRECCIÓN</td>
+    <td style="border:1px solid #888;padding:4px 7px;font-weight:700;font-size:11.5px" colspan="3">${n.direccion}</td>
+  </tr>
+</table>
+<table style="width:100%;border-collapse:collapse;margin-bottom:5px">
+  <tr>
+    <td style="border:1px solid #888;padding:4px 7px;background:#e0e0e0;font-weight:700;white-space:nowrap;width:1px;font-size:10.5px;text-transform:uppercase">CONEXIONES</td>
+    <td style="border:1px solid #888;padding:4px 7px">
+      <span style="display:inline-flex;gap:14px;align-items:center;font-size:11.5px;font-weight:600;text-transform:uppercase">
+        <span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle"></span>SÍ</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle"></span>NO</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle"></span>PROVISIONAL</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle"></span>ENCIMERA INSTALADA</span>
+      </span>
+    </td>
+  </tr>
+</table>
+<div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">MATERIAL DE ALMACÉN Y MATERIALES A PEDIR A DISTINTOS PROVEEDORES</div>
+<div style="width:100%;min-height:95px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.materiales||"").replace(/\n/g,"<br>")}</div>
+<div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">
+  MATERIAL PEDIR A FÁBRICA &nbsp;
+  <span style="display:inline-flex;gap:14px;align-items:center;font-size:11px;font-weight:600">
+    ${["Trae","Rekker","Inko","Fiona","Otro"].map(f=>{
+      const on=fabricas.map(x=>x.toLowerCase()).includes(f.toLowerCase());
+      return `<span><span style="display:inline-block;width:10px;height:10px;border:1.5px solid #000;margin-right:2px;vertical-align:middle;background:${on?"#000":"transparent"}"></span>${f.toUpperCase()}</span>`;
+    }).join("")}
+  </span>
+</div>
+<div style="width:100%;min-height:60px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.materialfabrica||"").replace(/\n/g,"<br>")}</div>
+<div style="color:#1a237e;font-weight:900;font-size:10.5px;padding:4px 0 2px;border-bottom:2px solid #1a237e;margin:7px 0 3px;text-transform:uppercase;letter-spacing:1px">OBSERVACIONES (TRABAJO QUE QUEDA POR HACER, TIEMPO ESTIMADO, OBSERVACIONES DEL CLIENTE, ELECTROS)</div>
+<div style="width:100%;min-height:60px;border:1px solid #888;padding:6px;font-size:11.5px;line-height:1.9;text-transform:uppercase">${(n.observaciones||"").replace(/\n/g,"<br>")}</div>
+</div>`;
+
+  const paginaFotos=n.fotos?.length?`<div style="page-break-before:always">
+<table style="width:100%;border-collapse:collapse;margin-bottom:10px;border:none"><tr>
+  <td style="border:none;padding:0;width:44%">${LOGO_HTML}</td>
+  <td style="border:none;padding:0;text-align:center;vertical-align:middle">
+    <div style="font-size:16px;font-weight:900;letter-spacing:2px;border-bottom:2px solid #000;padding-bottom:3px;margin-bottom:3px">${tipoTitulo} — FOTOS</div>
+    <div style="font-size:9.5px;color:#333">${n.cliente} &nbsp;|&nbsp; ${fmtFecha(n.fecha)}</div>
+  </td>
+  <td style="border:none;width:44%"></td>
+</tr></table>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+  ${n.fotos.map(f=>`<img src="${f.data}" style="width:calc(50% - 4px);border-radius:6px;object-fit:cover;aspect-ratio:1;border:1px solid #ddd">`).join("")}
+</div></div>`:"";
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>@page{size:A4;margin:12mm 14mm}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11.5px;color:#000;background:#fff}</style>
+</head><body>${paginaNota}${paginaFotos}</body></html>`;
 }
 
-const S = {
-  card:  { background: "#fff", borderRadius: 16, padding: 20, boxShadow: "0 8px 32px rgba(0,0,0,0.25)" },
-  label: { display: "block", fontSize: 13, fontWeight: 600, color: "#475569", marginBottom: 4 },
-  input: { width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: 8,
-           border: "1px solid #e2e8f0", fontSize: 14, background: "#fff", color: "#1e293b",
-           outline: "none", fontFamily: "inherit" },
-  row2:  { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 },
-  btnPrimary: { flex: 1, background: "linear-gradient(135deg,#2563eb,#0ea5e9)", color: "#fff",
-                border: "none", borderRadius: 10, padding: "12px 16px", fontWeight: 700, fontSize: 15, cursor: "pointer" },
-  btnSec:     { background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0",
-                borderRadius: 8, padding: "10px 14px", fontWeight: 600, fontSize: 13, cursor: "pointer" },
-  btnDanger:  { width: "100%", background: "#fff5f5", color: "#dc2626", border: "1px solid #fecaca",
-                borderRadius: 10, padding: 12, fontWeight: 600, fontSize: 14, cursor: "pointer" },
-  btnSm:      { background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0", borderRadius: 8,
-                padding: "0 12px", fontSize: 18, cursor: "pointer", minWidth: 38, height: 38,
-                display: "flex", alignItems: "center", justifyContent: "center" },
-  btnIcon:    { background: "rgba(255,255,255,0.08)", color: "#94a3b8", border: "1px solid rgba(255,255,255,0.15)",
-                borderRadius: 8, width: 38, height: 38, fontSize: 18, cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center" },
-};
+function exportPDFCurrent(){
+  const id=window._currentNotaId;
+  if(!id){alert("Error: recarga la app.");return;}
+  const n=notas.find(x=>String(x.id)===String(id));
+  if(!n){alert("Nota no encontrada. Pulsa 🔄 y vuelve a intentarlo.");return;}
+  currentNota=n;
+  exportPDF(id);
+}
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+async function exportPDF(id){
+  const n=notas.find(x=>String(x.id)===String(id));
+  if(!n){
+    alert("No se encontró la nota. Recarga la app.");
+    return;
+  }
+  const html=generarHTMLPDF(n);
+  const folderId=getFolderIdFromUrl(n.drive);
+  const filename=`${n.cliente.replace(/\s+/g,"_")}_${fmtFecha(n.fecha).replace(/\//g,"-")}.pdf`;
+  const btn=document.getElementById("btn-exportpdf");
+  const statusEl=document.getElementById("drive-status");
 
-  </script>
+  // Abrir PDF siempre
+  const w=window.open("","_blank");
+  w.document.write(html);w.document.close();
+  setTimeout(()=>w.print(),800);
+
+  // Si hay carpeta Drive, enviar solo datos de texto
+  if(folderId){
+    if(btn){btn.textContent="⏳ Guardando en Drive…";btn.disabled=true;}
+    if(statusEl)statusEl.innerHTML="";
+    try{
+      const notaSinFotos={
+        id:String(n.id), tipo:String(n.tipo||"remate"),
+        fecha:String(n.fecha||""), fecharemate:String(n.fecharemate||""),
+        cliente:String(n.cliente||""), direccion:String(n.direccion||""),
+        visita:String(n.visita||"1"), montador:String(n.montador||""),
+        apoyo:String(n.apoyo||""), medidor:String(n.medidor||""),
+        disenadora:String(n.disenadora||""), materiales:String(n.materiales||""),
+        fabrica:String(n.fabrica||""), materialfabrica:String(n.materialfabrica||""),
+        observaciones:String(n.observaciones||"")
+      };
+      if(statusEl)statusEl.innerHTML='<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;color:#1e40af">📡 Enviando petición a Drive…</div>';
+
+      const startTime=Date.now();
+      const fetchPromise=fetch(SCRIPT_URL,{
+        method:"POST",
+        headers:{"Content-Type":"text/plain"},
+        body:JSON.stringify({action:"savePDF",folderId,filename,nota:notaSinFotos})
+      });
+
+      const timeoutPromise=new Promise((_,reject)=>
+        setTimeout(()=>reject(new Error("TIMEOUT tras 25 segundos")),25000)
+      );
+
+      const res=await Promise.race([fetchPromise,timeoutPromise]);
+      const elapsed=Date.now()-startTime;
+
+      if(statusEl)statusEl.innerHTML='<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;color:#1e40af">📡 Respuesta recibida en '+elapsed+'ms, status: '+res.status+'</div>';
+
+      if(!res.ok){
+        throw new Error("HTTP "+res.status+": "+res.statusText);
+      }
+      const data=await res.json();
+      if(btn){btn.textContent="📄 Exportar PDF Completo";btn.disabled=false;}
+      if(statusEl){
+        if(data.ok){
+          statusEl.innerHTML='<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#15803d;display:flex;align-items:center;gap:8px">✅ PDF guardado correctamente en Drive</div>';
+        } else {
+          statusEl.innerHTML='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#dc2626;display:flex;align-items:center;gap:8px">❌ Error: '+(data.error||"inténtalo de nuevo")+'</div>';
+        }
+      }
+    }catch(e){
+      if(btn){btn.textContent="📄 Exportar PDF Completo";btn.disabled=false;}
+      if(statusEl)statusEl.innerHTML='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#dc2626">❌ Error de conexión: '+e.message+'</div>';
+    }
+  }
+}
+
+renderFilterBar();
+</script>
 </body>
 </html>
